@@ -1,12 +1,12 @@
-#include "php_coroutine.h"
+#include "lib_coroutine.h"
 
-zend_class_entry php_coroutine_ce;
-zend_class_entry *php_coroutine_ce_ptr;
+zend_class_entry lib_coroutine_ce;
+zend_class_entry *lib_coroutine_ce_ptr;
 
 PHP_MINIT_FUNCTION(study)
 {
     php_printf("MINIT\n");
-	INIT_NS_CLASS_ENTRY(php_coroutine_ce,"Lib","Coroutine",php_coroutine_util_methods);
+	INIT_NS_CLASS_ENTRY(lib_coroutine_ce,"Lib","Coroutine",lib_coroutine_util_methods);
 	
 	return SUCCESS;
 }
@@ -49,7 +49,7 @@ zend_module_entry study_module_entry = {
 	PHP_RINIT(study),
 	PHP_RSHUTDOWN(study),
 	PHP_MINFO(study),
-	PHP_STUDY_VERSION,
+	PHP_LIB_VERSION,
 	STANDARD_MODULE_PROPERTIES
 };
 

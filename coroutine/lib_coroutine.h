@@ -1,8 +1,8 @@
 #ifndef LIB_COROUTINE_H
 #define LIB_COROUTINE_H
 
-#include "php_study.h"
-namespace Coroutine
+#include "php_lib.h"
+namespace Lib
 {
     class PHPCoroutine
     {

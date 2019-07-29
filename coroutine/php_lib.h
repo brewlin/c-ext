@@ -5,19 +5,19 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 
-#include "study.h"
+#include "lib.h"
 
-#define PHP_STUDY_VERSION "0.1.0"
+#define PHP_LIB_VERSION "0.1.0"
 
-extern zend_module_entry study_module_entry;
-#define phpext_study_ptr &study_module_entry
+extern zend_module_entry lib_module_entry;
+#define phpext_lib_ptr &lib_module_entry
 
 #ifdef PHP_WIN32
-#	define PHP_STUDY_API __declspec(dllexport)
+#	define PHP_LIB_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_STUDY_API __attribute__ ((visibility("default")))
+#	define PHP_LIB_API __attribute__ ((visibility("default")))
 #else
-#	define PHP_STUDY_API
+#	define PHP_LIB_API
 #endif
 
 #ifdef ZTS
@@ -27,8 +27,8 @@ extern zend_module_entry study_module_entry;
 /**
  * Declare any global variables you may need between the BEGIN and END macros here
  */
-ZEND_BEGIN_MODULE_GLOBALS(study)
+ZEND_BEGIN_MODULE_GLOBALS(lib)
 
-ZEND_END_MODULE_GLOBALS(study)
+ZEND_END_MODULE_GLOBALS(lib)
 
-#endif	/* PHP_STUDY_H */
+#endif	/* PHP_LIB_H */
