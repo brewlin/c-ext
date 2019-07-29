@@ -1,5 +1,6 @@
 #ifndef COROUTINE_H
 #define COROUTINE_H
+#include "context.h"
 
 namespace Lib
 {

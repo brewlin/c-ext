@@ -1,8 +1,13 @@
-#include "php_study.h"
+#include "php_coroutine.h"
+
+zend_class_entry php_coroutine_ce;
+zend_class_entry *php_coroutine_ce_ptr;
 
 PHP_MINIT_FUNCTION(study)
 {
     php_printf("MINIT\n");
+	INIT_NS_CLASS_ENTRY(php_coroutine_ce,"Lib","Coroutine",php_coroutine_util_methods);
+	
 	return SUCCESS;
 }
 

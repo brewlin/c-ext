@@ -48,8 +48,8 @@ if test "$PHP_COROUTINE" != "no"; then
 
     coroutine_source_file="\
         coroutine.cc \
-        php_coroutine.cc \
-        php_coroutine_util.cc \
+        lib_coroutine.cc \
+        lib_coroutine_util.cc \
         ${COROUTINE_ASM_DIR}make_${COROUTINE_CONTEXT_ASM_FILE} \
         ${COROUTINE_ASM_DIR}jump_${COROUTINE_CONTEXT_ASM_FILE}
     "

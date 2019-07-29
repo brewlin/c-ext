@@ -1,5 +1,5 @@
-#ifndef PHP_COROUTINE_H
-#define PHP_COROUTINE_H
+#ifndef LIB_COROUTINE_H
+#define LIB_COROUTINE_H
 
 #include "php_study.h"
 namespace Coroutine

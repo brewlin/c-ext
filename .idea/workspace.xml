@@ -1,12 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b5e1c66b-0d05-43b1-8027-0afde966f309" name="Default Changelist" comment="" />
+    <list default="true" id="b5e1c66b-0d05-43b1-8027-0afde966f309" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/config.m4" beforeDir="false" afterPath="$PROJECT_DIR$/coroutine/config.m4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/include/context.h" beforeDir="false" afterPath="$PROJECT_DIR$/coroutine/include/context.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/include/coroutine.h" beforeDir="false" afterPath="$PROJECT_DIR$/coroutine/include/coroutine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/php_coroutine.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/php_coroutine.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/php_coroutine_util.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coroutine/php_study.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/config.m4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/include/study.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/php_study.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/study.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_arm64_aapcs_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_arm64_aapcs_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_arm_aapcs_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_arm_aapcs_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_arm_aapcs_pe_armasm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_combined_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_i386_ms_pe_gas.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_i386_ms_pe_masm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_i386_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_i386_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_i386_x86_64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_mips32_o32_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc32_ppc64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc32_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc32_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc32_sysv_xcoff_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_ppc64_sysv_xcoff_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_sparc64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_sparc_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_x86_64_ms_pe_gas.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_x86_64_ms_pe_masm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_x86_64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/jump_x86_64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_arm64_aapcs_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_arm64_aapcs_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_arm_aapcs_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_arm_aapcs_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_arm_aapcs_pe_armasm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_combined_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_i386_ms_pe_gas.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_i386_ms_pe_masm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_i386_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_i386_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_i386_x86_64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_mips32_o32_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc32_ppc64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc32_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc32_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc32_sysv_xcoff_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc64_sysv_macho_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_ppc64_sysv_xcoff_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_sparc64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_sparc_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_x86_64_ms_pe_gas.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_x86_64_ms_pe_masm.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_x86_64_sysv_elf_gas.S" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/study/thirdparty/boost/asm/make_x86_64_sysv_macho_gas.S" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor />
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,6 +107,11 @@
             <path>
               <item name="extension" type="b2602c69:ProjectViewProjectNode" />
               <item name="extension" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="extension" type="b2602c69:ProjectViewProjectNode" />
+              <item name="extension" type="462c0819:PsiDirectoryNode" />
+              <item name="coroutine" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -64,18 +147,19 @@
       <option name="presentableId" value="Default" />
       <updated>1563940948155</updated>
       <workItem from="1563940949601" duration="90000" />
-      <workItem from="1563946779180" duration="1837000" />
+      <workItem from="1563946779180" duration="2118000" />
+      <workItem from="1564393957644" duration="1008000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1927000" />
+    <option name="totallyTimeSpent" value="3216000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1932" height="1048" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25294748" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2561629" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -89,7 +173,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="File Transfer" order="9" weight="0.32962137" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.32962137" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -101,5 +185,15 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>

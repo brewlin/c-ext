@@ -1,5 +1,5 @@
-#ifndef PHP_STUDY_H
-#define PHP_STUDY_H
+#ifndef PHP_LIB_H
+#define PHP_LIB_H
 
 #include "php.h"
 #include "php_ini.h"

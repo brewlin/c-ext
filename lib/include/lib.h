@@ -1,5 +1,5 @@
-#ifndef STUDY_H_
-#define STUDY_H_
+#ifndef LIB_H_
+#define LIB_H_
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -40,4 +40,4 @@
 #include <sys/utsname.h>
 #include <sys/stat.h>
 
-#endif /* STUDY_H_ */
+#endif /* LIB_H_ */
