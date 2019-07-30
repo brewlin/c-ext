@@ -9,7 +9,9 @@
 
 #define PHP_LIB_VERSION "0.1.0"
 
+void lib_coroutine_util_init();
 extern zend_module_entry lib_module_entry;
+
 #define phpext_lib_ptr &lib_module_entry
 
 #ifdef PHP_WIN32

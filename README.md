@@ -1,7 +1,7 @@
 base c devlop php extension
-## @study
+## @lib
 >介绍一个扩展的开发流程 和demo
-[study](./study)
+[lib](./lib)
 
 ## @coroutine
 [coroutine](./coroutine)

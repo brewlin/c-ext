@@ -1,7 +1,12 @@
 #include "php_lib.h"
 
+// zend_class_entry lib_coroutine_ce;
+// zend_class_entry *lib_coroutine_ce_ptr;
+
 PHP_MINIT_FUNCTION(lib)
 {
+	// INIT_NS_CLASS_ENTRY(lib_coroutine_ce,"Lib","Coroutine",lib_coroutine_util_methods)
+	lib_coroutine_util_init();
     php_printf("MINIT\n");
 	return SUCCESS;
 }

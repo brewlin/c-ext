@@ -2,6 +2,7 @@
 #define LIB_COROUTINE_H
 
 #include "php_lib.h"
+
 namespace Lib
 {
     class PHPCoroutine
@@ -10,5 +11,4 @@ namespace Lib
     };
 }
 
-
-#endif	/* PHP_COROUTINE_H */
+#endif // !1LIB_COROUTINE_#define LIB_COROUTINE_HH
