@@ -50,6 +50,7 @@ if test "$PHP_LIB" != "no"; then
         lib.cc \
         lib_coroutine.cc \
         lib_coroutine_util.cc \
+        coroutine.cc \
         ${LIB_ASM_DIR}make_${LIB_CONTEXT_ASM_FILE} \
         ${LIB_ASM_DIR}jump_${LIB_CONTEXT_ASM_FILE}
     "
