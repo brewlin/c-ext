@@ -1,6 +1,6 @@
 #ifndef LIB_COROUTINE_H
 #define LIB_COROUTINE_H
-
+#define DEFAULT_PHP_STACK_PAGE_SIZE 8192
 #include "php_lib.h"
 //协程传递参数
 struct php_coro_args
@@ -39,6 +39,9 @@ namespace Lib
         static void save_vm_stack(php_coro_task *task);
         //获取当前协程栈信息
         static php_coro_task* get_task();
+        static void create_func(void *arg);
+        //初始化一个php栈
+        static void vm_stack_init(void);
     };
 }
 
