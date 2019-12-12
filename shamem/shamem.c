@@ -24,13 +24,24 @@ PHP_FUNCTION(shamalloc)
 	shm_t shm;
 	size_t size;
 
-	size = 8 * 16;//分配128字节内存
+	size = 10 ;//分配8字节内存
 
 	shm.size = size;
 	shm.name  = (u_char *)"shared_zone";
 	shm_alloc(&shm);
-	int* count = (int *)(shm.addr + 8);
 
+//	shm_free(&shm);
+//	int* count = (int *)(shm.addr + 8);
+//	zval *return_value;
+//	array_init(return_value);
+//	zval *arr =  (zval *)shm.addr;
+	zend_string *retval;
+	retval = (zend_string *)shm.addr;
+	php_printf("size %d",sizeof(shm.addr));
+	RETURN_STR(retval);
+//	array_init(arr);
+//	add_assoc_long(arr, "life", 42);
+//	return_value = arr;
 	php_printf("shammalloc ");
 
 }
@@ -51,7 +62,7 @@ PHP_FUNCTION(shamem_test2)
 
 	retval = strpprintf(0, "Hello %s", var);
 
-	RETURN_STR(retval);
+	RETURN_STR(&retval);
 }
 /* }}}*/
 
