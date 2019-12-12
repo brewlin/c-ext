@@ -5,10 +5,6 @@
 #define  OK          0
 #define  ERROR      -1
 
-
-#include <sys/mman.h>
-#include "php.h"
-#include "ext/standard/info.h"
 #include "php_shamem.h"
 typedef unsigned char u_char;
 

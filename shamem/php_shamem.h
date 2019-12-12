@@ -3,6 +3,17 @@
 #ifndef PHP_SHAMEM_H
 # define PHP_SHAMEM_H
 
+/* shamem extension for PHP */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <sys/mman.h>
+#include "php.h"
+#include "ext/standard/info.h"
+
+
 extern zend_module_entry shamem_module_entry;
 # define phpext_shamem_ptr &shamem_module_entry
 

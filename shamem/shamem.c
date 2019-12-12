@@ -1,11 +1,4 @@
-/* shamem extension for PHP */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include "php.h"
-#include "ext/standard/info.h"
 #include "php_shamem.h"
 #include "lib_shamem.h"
 
