@@ -2,7 +2,7 @@
 
 using Lib::PHPCoroutine;
 
-php_coro_task PHPCoroutine::main_task = {0}
+php_coro_task PHPCoroutine::main_task = {0};
 php_coro_task PHPCoroutine::get_task()
 {
     php_coro_task *task = (php_coro_task *)Coroutine::get_current_task();
