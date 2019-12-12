@@ -1,9 +1,12 @@
 #include "lib_coroutine.h"
-
+#include "coroutine.h"
+#include <iostream>
 using Lib::PHPCoroutine;
+using Lib::Coroutine;
 
+using namespace std;
 php_coro_task PHPCoroutine::main_task = {0};
-php_coro_task PHPCoroutine::get_task()
+php_coro_task* PHPCoroutine::get_task()
 {
     php_coro_task *task = (php_coro_task *)Coroutine::get_current_task();
     return task ? task : &main_task;
@@ -30,14 +33,10 @@ void PHPCoroutine::save_vm_stack(php_coro_task *task)
     task->vm_stack_top = EG(vm_stack_top);
     task->vm_stack_end = EG(vm_stack_end);
     task->vm_stack = EG(vm_stack);
-    task->vm_stack_page_size = EG(vm_stack_page_size);
+    // task->vm_stack_page_size = EG(vm_stack_page_size);
     task->execute_data = EG(current_execute_data);
 }
-//获取当前协程栈内容
-php_coro_task* PHPCoroutine::get_task()
-{
-    return nullptr;
-}
+
 
 //实现创建协程方法
 void PHPCoroutine::create_func(void *arg)
@@ -57,7 +56,7 @@ void PHPCoroutine::create_func(void *arg)
     //获取一个新的php栈
     vm_stack_init();
     call = (zend_execute_data *)EG(vm_stack_top);
-    EG(vm_stack_top) = (zval *)((char *)call + PHP_CORO_TASK_SLOT * sizeof(zval));
+    EG(vm_stack_top) = (zval *)((char *)call + DEFAULT_C_STACK_SIZE * sizeof(zval));
 
     call = zend_vm_stack_push_call_frame(
         ZEND_CALL_TOP_FUNCTION | ZEND_CALL_ALLOCATED,
@@ -74,13 +73,15 @@ void PHPCoroutine::create_func(void *arg)
     EG(current_execute_data) = call;
     save_vm_stack(task);
     task->co = Coroutine::get_current();
+
     task->co->set_task((void *)task);
     //把当前协程栈信息保存到task里面
     if(func->type == ZEND_USER_FUNCTION){
         ZVAL_UNDEF(retval);
         EG(current_execute_data) = NULL;
-        zend_init_func_execute_data(call,&func->op_array,retval);
-        zend_execute_ex(EG(current_execute_daa));
+        // zend_init_func_execute_data(call,&func->op_array,retval);
+        zend_init_execute_data(call,&func->op_array,retval);
+        zend_execute_ex(EG(current_execute_data));
     }
     zval_ptr_dtor(retval);
 
@@ -102,10 +103,6 @@ void PHPCoroutine::vm_stack_init(void)
     EG(vm_stack)->top ++ ;
     EG(vm_stack_top) = EG(vm_stack)->top;
     EG(vm_stack_end) = EG(vm_stack)->end;
-    EG(vm_stack_page_size) = size;
+    // EG(vm_stack_page_size) = size;
 }
 
-long Coroutine::create(coroutine_func_t fn,void *args)
-{
-    return (new Coroutine(fn,args))->run();
-}

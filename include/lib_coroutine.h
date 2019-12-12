@@ -2,6 +2,7 @@
 #define LIB_COROUTINE_H
 #define DEFAULT_PHP_STACK_PAGE_SIZE 8192
 #include "php_lib.h"
+#include "coroutine.h"
 //协程传递参数
 struct php_coro_args
 {
@@ -21,6 +22,7 @@ struct php_coro_task
     size_t vm_stack_page_size;
     //协程栈的栈帧
     zend_execute_data *execute_data;
+    Lib::Coroutine *co;
 
 };
 

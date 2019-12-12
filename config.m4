@@ -11,6 +11,7 @@ if test "$PHP_LIB" != "no"; then
 
     AS_CASE([$host_os],
         [linux*], [LIB_OS="LINUX"],
+        [darwin*],[LIB_OS="MAC"],
         []
     )
 
@@ -23,7 +24,6 @@ if test "$PHP_LIB" != "no"; then
       [arm64*], [LIB_CPU="arm64"],
       []
     )
-
     if test "$LIB_CPU" = "x86_64"; then
         if test "$LIB_OS" = "LINUX"; then
             LIB_CONTEXT_ASM_FILE="x86_64_sysv_elf_gas.S"
@@ -46,10 +46,17 @@ if test "$PHP_LIB" != "no"; then
         fi
     fi
 
+    if test "$LIB_CONTEXT_ASM_FILE" = ""; then
+        LIB_CONTEXT_ASM_FILE="x86_64_sysv_elf_gas.S"
+    fi
+
+
     lib_source_file="\
         lib.cc \
-        ${LIB_ASM_DIR}make_${LIB_CONTEXT_ASM_FILE} \
-        ${LIB_ASM_DIR}jump_${LIB_CONTEXT_ASM_FILE}
+        src/coroutine/coroutine.cc \
+        src/coroutine/lib_coroutine.cc \
+        src/coroutine/lib_coroutine_util.cc \
+        src/coroutine/context.cc 
     "
 
     PHP_NEW_EXTENSION(lib, $lib_source_file, $ext_shared, ,, cxx)
