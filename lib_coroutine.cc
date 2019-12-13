@@ -12,17 +12,16 @@ php_coro_task* PHPCoroutine::get_task()
     return task ? task : &main_task;
 }
 
-long PHPCoroutine::create(zend_fcall_info_cache *fci_cache,uint32_t argc,zval *argv){
+long PHPCoroutine::create(zend_fcall_info_cache *fci_cache, uint32_t argc, zval *argv)
+{
     php_coro_args php_coro_args;
-
     php_coro_args.fci_cache = fci_cache;
     php_coro_args.argv = argv;
     php_coro_args.argc = argc;
     save_task(get_task());
-    return Coroutine::create(create_func,(void *)&php_coro_args);
 
+    return Coroutine::create(create_func, (void*) &php_coro_args);
 }
-
 void PHPCoroutine::save_task(php_coro_task *task)
 {
     save_vm_stack(task);
@@ -33,7 +32,7 @@ void PHPCoroutine::save_vm_stack(php_coro_task *task)
     task->vm_stack_top = EG(vm_stack_top);
     task->vm_stack_end = EG(vm_stack_end);
     task->vm_stack = EG(vm_stack);
-    // task->vm_stack_page_size = EG(vm_stack_page_size);
+     task->vm_stack_page_size = EG(vm_stack_page_size);
     task->execute_data = EG(current_execute_data);
 }
 
@@ -56,7 +55,9 @@ void PHPCoroutine::create_func(void *arg)
     //获取一个新的php栈
     vm_stack_init();
     call = (zend_execute_data *)EG(vm_stack_top);
-    EG(vm_stack_top) = (zval *)((char *)call + DEFAULT_C_STACK_SIZE * sizeof(zval));
+    EG(vm_stack_top) = (zval *)((char *)call + PHP_CORO_TASK_SLOT * sizeof(zval));
+    task = (php_coro_task *) EG(vm_stack_top);
+
 
     call = zend_vm_stack_push_call_frame(
         ZEND_CALL_TOP_FUNCTION | ZEND_CALL_ALLOCATED,
@@ -79,7 +80,7 @@ void PHPCoroutine::create_func(void *arg)
     if(func->type == ZEND_USER_FUNCTION){
         ZVAL_UNDEF(retval);
         EG(current_execute_data) = NULL;
-        // zend_init_func_execute_data(call,&func->op_array,retval);
+         zend_init_func_execute_data(call,&func->op_array,retval);
         zend_init_execute_data(call,&func->op_array,retval);
         zend_execute_ex(EG(current_execute_data));
     }
@@ -103,6 +104,6 @@ void PHPCoroutine::vm_stack_init(void)
     EG(vm_stack)->top ++ ;
     EG(vm_stack_top) = EG(vm_stack)->top;
     EG(vm_stack_end) = EG(vm_stack)->end;
-    // EG(vm_stack_page_size) = size;
+     EG(vm_stack_page_size) = size;
 }
 

@@ -1,6 +1,6 @@
 
 #include "php_shamem.h"
-#include "lib_shamem.h"
+#include "../include/lib_shamem.h"
 
 /* For compatibility with older PHP versions */
 #ifndef ZEND_PARSE_PARAMETERS_NONE

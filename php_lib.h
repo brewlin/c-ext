@@ -31,4 +31,6 @@ ZEND_BEGIN_MODULE_GLOBALS(lib)
 
 ZEND_END_MODULE_GLOBALS(lib)
 
+void lib_coroutine_util_init();
+void lib_sharemem_util_init();
 #endif	/* PHP_LIB_H */

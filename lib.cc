@@ -2,25 +2,28 @@
 
 PHP_MINIT_FUNCTION(lib)
 {
-    php_printf("MINIT\n");
+	lib_coroutine_util_init();
+	//注册类
+	lib_sharemem_util_init();
+   // php_printf("MINIT\n");
 	return SUCCESS;
 }
 
 PHP_MSHUTDOWN_FUNCTION(lib)
 {
-    php_printf("MSHUTDOWN\n");
+    //php_printf("MSHUTDOWN\n");
 	return SUCCESS;
 }
 
 PHP_RINIT_FUNCTION(lib)
 {
-    php_printf("RINIT\n");
+    //php_printf("RINIT\n");
 	return SUCCESS;
 }
 
 PHP_RSHUTDOWN_FUNCTION(lib)
 {
-    php_printf("RSHUTDOWN\n");
+    //php_printf("RSHUTDOWN\n");
 	return SUCCESS;
 }
 
@@ -28,6 +31,8 @@ PHP_MINFO_FUNCTION(lib)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "lib support", "enabled");
+	php_info_print_table_row(2, "Author", "Brewlin Team <97404667@qq.com>");
+	php_info_print_table_row(2, "Version", "1.0.0");
 	php_info_print_table_end();
 }
 

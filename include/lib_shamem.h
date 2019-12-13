@@ -1,12 +1,13 @@
 #ifndef _SHMEM_H_INCLUDED_
 #define _SHMEM_H_INCLUDED_
 
+#include "php_lib.h"
 
 #define  OK          0
 #define  ERROR      -1
 
-#include "php_shamem.h"
 typedef unsigned char u_char;
+#define HAVE_MAP_ANON 1
 
 typedef struct {
     u_char      *addr;

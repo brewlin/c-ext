@@ -1,5 +1,4 @@
-#include "lib.h"
-#include "lib_sharemem.h"
+#include "lib_shamem.h"
 
 //采用 mmap 方式申请共享内存
 #if (HAVE_MAP_ANON)

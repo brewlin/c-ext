@@ -3,7 +3,9 @@
 using Lib::Coroutine;
 size_t Coroutine::stack_size = DEFAULT_C_STACK_SIZE;
 Coroutine* Coroutine::current  = nullptr;
+std::unordered_map<long, Coroutine*> Coroutine::coroutines;
 long Coroutine::last_cid = 0;
+
 
 void * Coroutine::get_current_task()
 {
