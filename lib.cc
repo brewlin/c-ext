@@ -1,5 +1,5 @@
 #include "php_lib.h"
-
+#include "fork.h"
 PHP_MINIT_FUNCTION(lib)
 {
 	lib_coroutine_util_init();
@@ -37,6 +37,7 @@ PHP_MINFO_FUNCTION(lib)
 }
 
 const zend_function_entry lib_functions[] = {
+    PHP_FE(lib_fork,NULL)
 	PHP_FE_END
 };
 
