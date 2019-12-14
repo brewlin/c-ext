@@ -10,10 +10,10 @@ int shm_alloc(shm_t *shm)
                                 MAP_ANON|MAP_SHARED, -1, 0);
 
     if (shm->addr == MAP_FAILED) {
-        php_printf( "mmap(MAP_ANON|MAP_SHARED, %d) failed", shm->size);
+        php_printf( "mmap(MAP_ANON|MAP_SHARED, %d) failed\n", shm->size);
         return ERROR;
     }
-    php_printf( "mmap(MAP_ANON|MAP_SHARED, %d) success", shm->size);
+    php_printf( "mmap(MAP_ANON|MAP_SHARED, %d) success\n", shm->size);
     return OK;
 }
 
@@ -21,9 +21,9 @@ int shm_alloc(shm_t *shm)
 void shm_free(shm_t *shm)
 {
     if (munmap((void *) shm->addr, shm->size) == -1) {
-        php_printf( "munmap(%s, %d) failed", shm->addr, shm->size);
+        php_printf( "munmap(%s, %d) failed\n", shm->addr, shm->size);
     }
-    php_printf( "munmap( %d) success",  shm->size);
+    php_printf( "munmap( %d) success\n",  shm->size);
 }
 //采用 文件映射方式申请共享内存
 #elif (HAVE_MAP_DEVZERO)
@@ -32,7 +32,7 @@ int_t shm_alloc(shm_t *shm)
 {
     fd_t  fd;
 
-    fd = open("/dev/zero", O_RDWR);
+    fd = open("/dev/zero\n", O_RDWR);
 
     if (fd == -1) {
         php_printf( "open(\"/dev/zero\") failed");
@@ -43,7 +43,7 @@ int_t shm_alloc(shm_t *shm)
                                 MAP_SHARED, fd, 0);
 
     if (shm->addr == MAP_FAILED) {
-        php_printf( "mmap(/dev/zero, MAP_SHARED, %d) failed", shm->size);
+        php_printf( "mmap(/dev/zero, MAP_SHARED, %d) failed\n", shm->size);
     }
 
     if (close(fd) == -1) {
@@ -57,7 +57,7 @@ int_t shm_alloc(shm_t *shm)
 void shm_free(shm_t *shm)
 {
     if (munmap((void *) shm->addr, shm->size) == -1) {
-        php_printf("munmap(%s, %d) failed", shm->addr, shm->size);
+        php_printf("munmap(%s, %d) failed\n", shm->addr, shm->size);
     }
 }
 //采用 shmget 系统调用方式申请共享内存
@@ -74,11 +74,11 @@ int_t shm_alloc(shm_t *shm)
     id = shmget(IPC_PRIVATE, shm->size, (SHM_R|SHM_W|IPC_CREAT));
 
     if (id == -1) {
-        php_printf("shmget(%d) failed", shm->size);
+        php_printf("shmget(%d) failed\n", shm->size);
         return ERROR;
     }
 
-    php_printf(, "shmget id: %d", id);
+    php_printf(, "shmget id: %d\n", id);
 
     shm->addr = shmat(id, NULL, 0);
 
@@ -97,7 +97,7 @@ int_t shm_alloc(shm_t *shm)
 void shm_free(shm_t *shm)
 {
     if (shmdt(shm->addr) == -1) {
-        php_printf("shmdt(%s) failed", shm->addr);
+        php_printf("shmdt(%s) failed\n", shm->addr);
     }
 }
 

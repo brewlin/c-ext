@@ -15,7 +15,28 @@ static PHP_METHOD(shamem_obj,__construct);
 static PHP_METHOD(shamem_obj,add);
 static PHP_METHOD(shamem_obj,get);
 
-
+/**
+ * namespace Lib;
+ * class SharMem
+ * {
+ *   private $addr = null; 共享内存的实际地址
+ *   public $size = int;
+ *   public function __construct(int $size){
+ *      $this->size = $size;
+ *      $this->addr = shm_alloc(size);
+ *   }
+ *   // return int(addr)
+ *   public function get()
+ *   {
+ *   }
+ *   // *addr ++
+ *   public function incr()
+ *   {
+ *   }
+ * }
+ */
+shm_t shm;
+int *res;
 PHP_METHOD(shamem_obj,__construct)
 {
 
@@ -26,30 +47,34 @@ PHP_METHOD(shamem_obj,__construct)
     }
     zend_update_property_long(lib_shamem_ce_ptr,getThis(), ZEND_STRL("size"), initSize TSRMLS_CC);
 
-    shm_t shm;
     shm.size = (size_t)initSize ;
     shm_alloc(&shm);
     addr = (u_char *)shm.addr;
 
-    php_printf("sharmem construct size:%ld",initSize);
-
-
+	res = (int *)(shm.addr + 8);
+	*res +=1;
 }
-PHP_METHOD(shamem_obj,add)
+PHP_METHOD(shamem_obj,__destruct)
 {
-
+    shm_free(&shm);
+    php_printf("sharmem destruct size\n");
+}
+PHP_METHOD(shamem_obj,incr)
+{
+    *res += 1;
 }
 PHP_METHOD(shamem_obj,get)
 {
-
-
+    long re = (long)*res;
+    ZVAL_LONG(return_value,re);
 }
 
 const zend_function_entry lib_shamem_util_methods[] =
         {
 //                PHP_ME(lib_shamem_util,__construct,arginfo_lib_shamem_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
                 PHP_ME(shamem_obj,__construct,arginfo_init,ZEND_ACC_PUBLIC)
-                PHP_ME(shamem_obj,add,NULL,ZEND_ACC_PUBLIC)
+                PHP_ME(shamem_obj,__destruct,NULL,ZEND_ACC_PUBLIC)
+                PHP_ME(shamem_obj,incr,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(shamem_obj,get,NULL,ZEND_ACC_PUBLIC)
                 PHP_FE_END
         };
