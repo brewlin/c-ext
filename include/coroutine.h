@@ -17,6 +17,13 @@ namespace Lib
         static long create(coroutine_func_t fn,void * args = nullptr);
         void* get_task();
         void set_task(void *_task);
+        //内联
+        inline long get_cid()
+        {
+            return cid;
+        }
+        void yield();
+        void resume();
 
     
     protected:
@@ -39,6 +46,7 @@ namespace Lib
             long cid = this->cid;
             origin = current;
             current = this;
+            //加载携程上下文
             ctx.swap_in();
             return cid;
         }

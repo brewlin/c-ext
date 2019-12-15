@@ -13,6 +13,7 @@ namespace Lib
     public:
         Context(size_t stack_size,coroutine_func_t fn,void *private_data);
         static void context_func(void *arg);
+        //让出携程上下文
         bool swap_out();
         bool swap_in();
 

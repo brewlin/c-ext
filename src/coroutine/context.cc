@@ -19,12 +19,13 @@ void Context::context_func(void *arg){
     _this->fn_(_this->private_data_);
     _this->swap_out();
 }
-
+//让出携程上下文
 bool Context::swap_out()
 {
     jump_fcontext(&ctx_,swap_ctx_,(intptr_t)this,true);
     return true;
 }
+//保存上下问到ofc，加载nfc上下文
 bool Context::swap_in()
 {
     jump_fcontext(&swap_ctx_,ctx_,(intptr_t)this,true);
