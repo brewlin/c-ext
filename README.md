@@ -1,5 +1,11 @@
 # 基于c ，c ++ 封装php对象扩展
-
+## 编译部署
+```
+$> phpize
+$> ./configure
+$> make & make install
+$> echo extension=path/to/lib.so >> /etc/php?/php.ini
+```
 ## @Lib
 所有的扩展对象均以`Lib` 命名空间为开头
 ```php
