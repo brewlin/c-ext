@@ -17,6 +17,7 @@ Context::Context(size_t stack_size, coroutine_func_t fn, void* private_data) :
 void Context::context_func(void *arg){
     Context *_this = (Context *)arg;
     _this->fn_(_this->private_data_);
+    _this->end_ = true;
     _this->swap_out();
 }
 //让出携程上下文

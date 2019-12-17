@@ -3,7 +3,7 @@
 
 #include "php_lib.h"
 #include "coroutine.h"
-
+#include "stack.h"
 
 #define PHP_CORO_TASK_SLOT ((int)((ZEND_MM_ALIGNED_SIZE(sizeof(php_coro_task)) + ZEND_MM_ALIGNED_SIZE(sizeof(zval)) - 1) / ZEND_MM_ALIGNED_SIZE(sizeof(zval))))
 #define DEFAULT_PHP_STACK_PAGE_SIZE 8192
@@ -29,7 +29,14 @@ struct php_coro_task
     //协程栈的栈帧
     zend_execute_data *execute_data;
     Lib::Coroutine *co;
+    std::stack<php_lib_fci_fcc *> *defer_tasks;
 
+};
+
+struct php_lib_fci_fcc
+{
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
 };
 
 namespace Lib
@@ -37,6 +44,7 @@ namespace Lib
     class PHPCoroutine
     {
     public:
+        static void defer(php_lib_fci_fcc *defer_fci_fcc);
         static long create(zend_fcall_info_cache *fci_cache,uint32_t argc,zval *argv);
     protected:
         //主协程成员

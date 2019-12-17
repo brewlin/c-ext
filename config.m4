@@ -52,6 +52,7 @@ if test "$PHP_LIB" != "no"; then
 
     lib_source_file="\
         lib.cc \
+        lib_coroutine.cc \
         src/fork/fork.cc \
         src/memory/ShareMemUtil.cc \
         src/memory/ShareMem.cc \

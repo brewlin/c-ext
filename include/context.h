@@ -13,6 +13,10 @@ namespace Lib
     public:
         Context(size_t stack_size,coroutine_func_t fn,void *private_data);
         static void context_func(void *arg);
+        inline bool is_end()
+        {
+            return end_;
+        }
         //让出携程上下文
         bool swap_out();
         bool swap_in();
@@ -24,6 +28,8 @@ namespace Lib
         uint32_t stack_size_;
         void *private_data_;
         coroutine_context_t ctx_;
+    protected:
+        bool end_ = false;
 
     };
 }
