@@ -7,6 +7,7 @@
 
 //保存所有自定义进程
 process_t processes[MAX_PROCESSES];
+socket_t     channel;
 
 int_t        last_process;
 //当前进程的编号
@@ -116,11 +117,11 @@ pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
             //子进程
         case 0:
             //此时fork 返回的是0 把主进程的pid 赋值给parent
-            parent = ce_pid;
+            ce_parent = ce_pid;
             //获取当前子进程pid
             ce_pid = getpid();
             //进入子进程循环
-            proc(data);
+            proc(process_slot);
             break;
 
         default:
@@ -182,13 +183,4 @@ pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
     return pid;
 }
 
-//子进程 主事件循环的地方
-void worker_process_cycle(void *data)
-{
-    ngx_int_t worker = (intptr_t) data;
 
-    ngx_process = NGX_PROCESS_WORKER;
-    ngx_worker = worker;
-    // 关闭父进程channel通道，讲channel读写通道 加入event事件中
-
-}

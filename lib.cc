@@ -2,8 +2,9 @@
 #include "fork.h"
 PHP_MINIT_FUNCTION(lib)
 {
-	lib_coroutine_util_init();
+//	lib_coroutine_util_init();
 	//注册类
+	lib_process_init();
 	lib_sharemem_util_init();
    // php_printf("MINIT\n");
 	return SUCCESS;

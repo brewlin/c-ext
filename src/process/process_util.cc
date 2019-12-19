@@ -1,3 +1,4 @@
+#include "php_lib.h"
 #include "process.h"
 
 
@@ -17,7 +18,7 @@ php_lib_fun funs[MAX_PROCESSES * 10];
 //    zend_fcall_info_cache fcc;
 //};
 
-PHP_METHOD(shamem_obj,__construct)
+PHP_METHOD(process_obj,__construct)
 {
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
@@ -33,37 +34,50 @@ PHP_METHOD(shamem_obj,__construct)
     php_lib_fun func;
     func.fci = fci;
     func.fcc = fcc;
-    funs[cid] = func
+    funs[cid] = func;
     zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("pid"), cid TSRMLS_CC);
     cid += 1;
+}
+//子进程 主事件循环的地方
+void worker_process_cycle(long cid)
+{
+    php_lib_fun func = funs[cid];
+//    func.fci.retval = getThis();
+
+    if (zend_call_function(&func.fci, &func.fcc) != SUCCESS)
+    {
+        return;
+    }
 
 }
 //启动子进程
-PHP_METHOD(shamem_obj,start)
+PHP_METHOD(process_obj,start)
 {
-    zval *re = zend_read_property(lib_process_ce_ptr, getThis(), "pid", 3, 1 TSRMLS_CC);
+    zval *re,r;
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("pid")-1, 1,&r);
 
     long cid = Z_LVAL_P(re);
-    spawn_proc_pt
 
+
+    spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
 }
 
-PHP_METHOD(shamem_obj,__destruct)
+PHP_METHOD(process_obj,__destruct)
 {
 }
-PHP_METHOD(shamem_obj,read)
+PHP_METHOD(process_obj,read)
 {
 
 }
-PHP_METHOD(shamem_obj,write)
+PHP_METHOD(process_obj,write)
 {
 }
 
-PHP_METHOD(shamem_obj,getpid)
+PHP_METHOD(process_obj,getpid)
 {
     RETURN_LONG((long)ce_pid);
 }
-PHP_METHOD(shamem_obj,getppid)
+PHP_METHOD(process_obj,getppid)
 {
     RETURN_LONG((long)ce_parent);
 }
@@ -92,13 +106,13 @@ void lib_process_init()
     //获取父进程pid
     ce_parent = getppid();
 
-    INIT_NS_CLASS_ENTRY(lib_shamem_ce,"Lib","Process",lib_process_methods);
+    INIT_NS_CLASS_ENTRY(lib_process_ce,"Lib","Process",lib_process_methods);
     lib_process_ce_ptr = zend_register_internal_class(&lib_process_ce TSRMLS_CC);
 
 //    lib_shamem_ce_ptr->serialize = zend_class_serialize_deny;
 //    lib_shamem_ce_ptr->unserialize = zend_class_unserialize_deny;
     //申明类的属性
-    zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("pid"), ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("pid"),0, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("ppid"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
 
 }
