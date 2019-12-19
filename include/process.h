@@ -34,6 +34,7 @@ typedef struct {
 typedef struct {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
+    zval *obj;
 }php_lib_fun;
 
 #define MAX_PROCESSES         1024

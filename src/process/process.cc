@@ -9,6 +9,9 @@
 process_t processes[MAX_PROCESSES];
 socket_t     channel;
 
+pid_t      ce_pid;
+pid_t      ce_parent;
+
 int_t        last_process;
 //当前进程的编号
 int_t        process_slot;

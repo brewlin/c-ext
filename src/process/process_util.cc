@@ -22,15 +22,11 @@ PHP_METHOD(process_obj,__construct)
 {
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
-
-    ZEND_PARSE_PARAMETERS_START(1,-1)
+    ZEND_PARSE_PARAMETERS_START(1,1)
     Z_PARAM_FUNC(fci,fcc)
-    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
+//    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    if(zend_call_function(&fci,&fcc) != SUCCESS){
-        return;
-    }
     php_lib_fun func;
     func.fci = fci;
     func.fcc = fcc;
@@ -41,25 +37,32 @@ PHP_METHOD(process_obj,__construct)
 //子进程 主事件循环的地方
 void worker_process_cycle(long cid)
 {
+    php_printf("start worker cid:%ld \n",cid);
     php_lib_fun func = funs[cid];
 //    func.fci.retval = getThis();
+//    func.fci.params = func.obj;
+//    func.fci.param_count = 1;
 
     if (zend_call_function(&func.fci, &func.fcc) != SUCCESS)
     {
+        php_printf("start worker error\n");
         return;
     }
+    php_printf("start worker end cid:%ld \n",cid);
 
 }
 //启动子进程
 PHP_METHOD(process_obj,start)
 {
     zval *re,r;
+
     re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("pid")-1, 1,&r);
 
     long cid = Z_LVAL_P(re);
+    funs[cid].obj = getThis();
 
-
-    spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
+    pid_t p = spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
+    printf("pid :%d cid:%ld \n",p,cid);
 }
 
 PHP_METHOD(process_obj,__destruct)
