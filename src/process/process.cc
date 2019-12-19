@@ -124,7 +124,8 @@ pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
             //获取当前子进程pid
             ce_pid = getpid();
             //进入子进程循环
-            return pid;
+            proc(process_slot);
+            break;
 
         default:
             break;

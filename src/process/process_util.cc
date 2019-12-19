@@ -22,20 +22,16 @@ PHP_METHOD(process_obj,__construct)
 {
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
-//    zval result;
+
     ZEND_PARSE_PARAMETERS_START(1,1)
     Z_PARAM_FUNC(fci,fcc)
 //    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-//    fci.params = getThis();
-//    fci.param_count = 1;
-//    fci.retval = &result;
-//    if(zend_call_function(&fci,&fcc) != SUCCESS){
-//        return;
-//    }
-    php_lib_fun func;
-    func.fci = fci;
-    func.fcc = fcc;
+
+    php_lib_fun func = {
+            fci,fcc,getThis()
+    };
+
     funs[cid] = func;
     zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("pid"), cid TSRMLS_CC);
     cid += 1;
@@ -44,12 +40,15 @@ PHP_METHOD(process_obj,__construct)
 void worker_process_cycle(long cid)
 {
     php_lib_fun func = funs[cid];
-//    func.fci.retval = getThis();
-
-    if (zend_call_function(&func.fci, &func.fcc) != SUCCESS)
-    {
+    zval result;
+    func.fci.params = func.obj;
+    func.fci.param_count = 1;
+    func.fci.retval = &result;
+    if(zend_call_function(&func.fci,&func.fcc) != SUCCESS){
         return;
     }
+    //die child processs
+    exit(0);
 
 }
 //启动子进程
@@ -59,20 +58,7 @@ PHP_METHOD(process_obj,start)
     re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("pid")-1, 1,&r);
 
     long cid = Z_LVAL_P(re);
-
-    pid_t pid = spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
-    if(pid == 0){
-        php_lib_fun func = funs[cid];
-        zval result;
-        func.fci.params = getThis();
-        func.fci.param_count = 1;
-        func.fci.retval = &result;
-        if(zend_call_function(&func.fci,&func.fcc) != SUCCESS){
-            return;
-        }
-        //die child processs
-        exit(0);
-    }
+    spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
 }
 
 PHP_METHOD(process_obj,__destruct)
