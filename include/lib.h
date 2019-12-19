@@ -40,6 +40,14 @@
 #include <sys/utsname.h>
 #include <sys/stat.h>
 
+typedef unsigned int uint_t;
+typedef int int_t;
+
+typedef int pid_t;
+typedef int fd_t;
+
+typedef int  socket_t;
+
 
 
 #endif /* LIB_H_ */
