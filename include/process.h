@@ -9,7 +9,7 @@
 #include "php_lib.h"
 
 typedef void (*spawn_proc_pt) (long cid);
-
+#define memzero(buf, n)       (void) memset(buf, 0, n)
 
 typedef struct {
    pid_t pid;

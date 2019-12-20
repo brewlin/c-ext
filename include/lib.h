@@ -47,7 +47,10 @@ typedef int pid_t;
 typedef int fd_t;
 
 typedef int  socket_t;
+typedef int  err_t;
 
-
+#define ERROR -1
+#define OK 0
+#define AGAIN 1
 
 #endif /* LIB_H_ */

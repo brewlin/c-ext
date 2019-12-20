@@ -10,6 +10,8 @@
 #define CMD_TEST2 2
 #define CMD_TEST3 3
 
+
+
 typedef struct {
     //channel 之间传递 int 型数据
     uint_t command;
@@ -23,7 +25,8 @@ typedef struct {
 }channel_t;
 
 
-
+int_t write_channel(socket_t s, channel_t *ch, size_t size);
+int_t read_channel(socket_t s, channel_t *ch, size_t size);
 void close_channel(fd_t *fd);
 
 #endif //C_EXT_CHANNEL_H

@@ -1,9 +1,13 @@
 #include "php_lib.h"
 #include "process.h"
-
+#include "channel.h"
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_construct,0,0,1)
 ZEND_ARG_CALLABLE_INFO(0,func,0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_write,0,0,1)
+ZEND_ARG_INFO(0,arg)
 ZEND_END_ARG_INFO()
 
 zend_class_entry lib_process_ce;
@@ -33,7 +37,7 @@ PHP_METHOD(process_obj,__construct)
     };
 
     funs[cid] = func;
-    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("pid"), cid TSRMLS_CC);
+    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("slot"), cid TSRMLS_CC);
     cid += 1;
 }
 //子进程 主事件循环的地方
@@ -55,7 +59,7 @@ void worker_process_cycle(long cid)
 PHP_METHOD(process_obj,start)
 {
     zval *re,r;
-    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("pid")-1, 1,&r);
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
 
     long cid = Z_LVAL_P(re);
     spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
@@ -66,10 +70,37 @@ PHP_METHOD(process_obj,__destruct)
 }
 PHP_METHOD(process_obj,read)
 {
+    zval *re,r;
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
+    long slot = Z_LVAL_P(re);
 
+    channel_t      ch;
+    int_t n = read_channel(processes[slot].channel[1], &ch, sizeof(channel_t));
+    if(n != OK){
+        RETURN_FALSE;
+    }
+    RETURN_LONG(long(ch.command));
 }
 PHP_METHOD(process_obj,write)
 {
+    long arg = 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &arg) == FAILURE)
+    {
+        RETURN_FALSE;
+    }
+    zval *re,r;
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
+    long slot = Z_LVAL_P(re);
+
+    channel_t  ch;
+    memzero(&ch, sizeof(channel_t));
+    ch.command = (uint_t)arg;
+    ch.fd = -1;
+
+    if (write_channel(processes[slot].channel[0], &ch, sizeof(channel_t))){
+        RETURN_TRUE;
+    }
+    RETURN_TRUE;
 }
 
 PHP_METHOD(process_obj,getpid)
@@ -83,14 +114,13 @@ PHP_METHOD(process_obj,getppid)
 
 const zend_function_entry lib_process_methods[] =
         {
-//                PHP_ME(lib_shamem_util,__construct,arginfo_lib_shamem_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
                 PHP_ME(process_obj,__construct,arginfo_lib_process_construct,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,__destruct,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,start,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,read,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,getpid,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,getppid,NULL,ZEND_ACC_PUBLIC)
-                PHP_ME(process_obj,write,NULL,ZEND_ACC_PUBLIC)
+                PHP_ME(process_obj,write,arginfo_lib_process_write,ZEND_ACC_PUBLIC)
                 PHP_FE_END
         };
 
@@ -112,6 +142,7 @@ void lib_process_init()
 //    lib_shamem_ce_ptr->unserialize = zend_class_unserialize_deny;
     //申明类的属性
     zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("pid"),0, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("slot"),0, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_long(lib_process_ce_ptr, ZEND_STRL("ppid"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
 
 }

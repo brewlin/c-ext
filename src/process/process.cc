@@ -53,7 +53,7 @@ pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
             return INVALID_PID;
         }
 
-        php_printf("channel %d:%d",processes[s].channel[0],processes[s].channel[1]);
+//        php_printf("channel %d:%d",processes[s].channel[0],processes[s].channel[1]);
 
 //        //将unix socket 套接字设置为非阻塞
 //        if (nonblocking(processes[s].channel[0]) == -1) {
