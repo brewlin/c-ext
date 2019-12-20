@@ -1,4 +1,5 @@
 # 基于c ，c ++ 封装php对象扩展
+docs:http://docs.huido.site/wiki/c-ext/index/
 ## 编译部署
 ```
 $> phpize
@@ -42,3 +43,34 @@ while(true)
     var_dump("this is parent process get value:".$obj->get());
 }
 ```
+## @`Lib/Process`
+该扩展初始化传入回调函数并创建子进程执行，子进程间可以通过channel通讯
+```php
+<?php
+$process = new Lib\Process(function(Lib\Process $process){
+    while(true){
+        $data = $process->read();
+        echo "child process :> get parent msg: $data \n\n";
+    }
+});
+
+$process->start();
+for($i = 0;$i < 10 ; $i ++ ){
+    echo "parent process :> send child msg: $i\n";
+    $process->write($i);
+    sleep(1);
+}
+```
+- `construct()`
+初始化构造函数时必须传入回调函数，在子进程创建时会调用
+- `start()`
+执行创建子进程操作
+- `$process->write($data)`
+向子进程或者父进程写入数据
+- `$process->read()`
+向子进程或父进程读取数据
+
+- `$process->getpid()`
+获取当前进程id
+-  `$process->getppid()`
+获取父进程id
