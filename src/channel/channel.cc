@@ -53,12 +53,12 @@ int_t write_channel(socket_t s, channel_t *ch, size_t size)
 #else
 
     if (ch->fd == -1) {
-//        msg.msg_accrights = NULL;
-//        msg.msg_accrightslen = 0;
+        msg.msg_accrights = NULL;
+        msg.msg_accrightslen = 0;
 
     } else {
-//        msg.msg_accrights = (caddr_t) &ch->fd;
-//        msg.msg_accrightslen = sizeof(int);
+        msg.msg_accrights = (caddr_t) &ch->fd;
+        msg.msg_accrightslen = sizeof(int);
     }
 
 #endif
@@ -114,8 +114,8 @@ int_t read_channel(socket_t s, channel_t *ch, size_t size)
     msg.msg_control = (caddr_t) &cmsg;
     msg.msg_controllen = sizeof(cmsg);
 #else
-//    msg.msg_accrights = (caddr_t) &fd;
-//    msg.msg_accrightslen = sizeof(int);
+    msg.msg_accrights = (caddr_t) &fd;
+    msg.msg_accrightslen = sizeof(int);
 #endif
 
     n = recvmsg(s, &msg, 0);
@@ -142,26 +142,26 @@ int_t read_channel(socket_t s, channel_t *ch, size_t size)
 
 #if (HAVE_MSGHDR_MSG_CONTROL)
 
-    if (ch->command == CMD_OPEN_CHANNEL) {
-
-        if (cmsg.cm.cmsg_len < (socklen_t) CMSG_LEN(sizeof(int))) {
-            php_printf("recvmsg() returned too small ancillary data");
-            return ERROR;
-        }
-
-        if (cmsg.cm.cmsg_level != SOL_SOCKET || cmsg.cm.cmsg_type != SCM_RIGHTS)
-        {
-            php_printf(
-                          "recvmsg() returned invalid ancillary data "
-                          "level %d or type %d",
-                          cmsg.cm.cmsg_level, cmsg.cm.cmsg_type);
-            return ERROR;
-        }
+//    if (ch->command == CMD_OPEN_CHANNEL) {
+//
+//        if (cmsg.cm.cmsg_len < (socklen_t) CMSG_LEN(sizeof(int))) {
+//            php_printf("recvmsg() returned too small ancillary data");
+//            return ERROR;
+//        }
+//
+//        if (cmsg.cm.cmsg_level != SOL_SOCKET || cmsg.cm.cmsg_type != SCM_RIGHTS)
+//        {
+//            php_printf(
+//                          "recvmsg() returned invalid ancillary data "
+//                          "level %d or type %d",
+//                          cmsg.cm.cmsg_level, cmsg.cm.cmsg_type);
+//            return ERROR;
+//        }
 
         /* ch->fd = *(int *) CMSG_DATA(&cmsg.cm); */
 
         memcpy(&ch->fd, CMSG_DATA(&cmsg.cm), sizeof(int));
-    }
+//    }
 
     if (msg.msg_flags & (MSG_TRUNC|MSG_CTRUNC)) {
         php_printf(
@@ -170,14 +170,14 @@ int_t read_channel(socket_t s, channel_t *ch, size_t size)
 
 #else
 
-//    if (ch->command == CMD_OPEN_CHANNEL) {
-//        if (msg.msg_accrightslen != sizeof(int)) {
-//            php_printf( "recvmsg() returned no ancillary data");
-//            return ERROR;
-//        }
+    if (ch->command == CMD_OPEN_CHANNEL) {
+        if (msg.msg_accrightslen != sizeof(int)) {
+            php_printf( "recvmsg() returned no ancillary data");
+            return ERROR;
+        }
 
         ch->fd = fd;
-//    }
+    }
 
 #endif
 

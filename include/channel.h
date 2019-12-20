@@ -10,6 +10,7 @@
 #define CMD_TEST2 2
 #define CMD_TEST3 3
 
+#define HAVE_MSGHDR_MSG_CONTROL 1
 
 
 typedef struct {

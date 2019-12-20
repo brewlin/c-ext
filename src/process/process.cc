@@ -131,7 +131,7 @@ pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
             break;
     }
 
-    php_printf("start %s %P", name, pid);
+//    php_printf("start %s %P", name, pid);
 
     //fork 返回成功后  是子进程的pid
     processes[s].pid = pid;

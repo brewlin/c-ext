@@ -53,4 +53,6 @@ typedef int  err_t;
 #define OK 0
 #define AGAIN 1
 
+#define memzero(buf, n)       (void) memset(buf, 0, n)
+
 #endif /* LIB_H_ */
