@@ -51,6 +51,6 @@ extern pid_t      ce_pid;
 extern pid_t      ce_parent;
 extern process_t  processes[MAX_PROCESSES];
 
-pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn);
+pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,int_t respawn);
 
 #endif //C_EXT_PROCESS_H

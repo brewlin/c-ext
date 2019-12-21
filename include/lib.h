@@ -55,4 +55,9 @@ typedef int  err_t;
 
 #define memzero(buf, n)       (void) memset(buf, 0, n)
 
+#define ncpu 3
+
+
+
+
 #endif /* LIB_H_ */

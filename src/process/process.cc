@@ -16,7 +16,7 @@ int_t        last_process;
 //当前进程的编号
 int_t        process_slot;
 
-pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,uint_t respawn)
+pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,int_t respawn)
 {
     unsigned long     on;
     pid_t  pid;
