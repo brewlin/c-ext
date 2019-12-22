@@ -5,6 +5,11 @@
 #ifndef C_EXT_AUTOMIC_H
 #define C_EXT_AUTOMIC_H
 
+#include "lib.h"
+
+typedef int64_t                     atomic_int_t;
+typedef uint64_t                    atomic_uint_t;
+typedef volatile atomic_uint_t  atomic_t;
 
 
 #if (HAVE_LIBATOMIC)
@@ -257,7 +262,7 @@ typedef volatile atomic_uint_t  atomic_t;
 
 
 //当cpu原生架构不支持等时候 在c语言上模拟原子操作
-// #if !(HAVE_ATOMIC_OPS)
+#if !(HAVE_ATOMIC_OPS)
 #include "lib.h"
 
 #define HAVE_ATOMIC_OPS  0
@@ -296,7 +301,17 @@ atomic_fetch_add(atomic_t *value, atomic_int_t add)
 #define memory_barrier()
 #define cpu_pause()
 
-// #endif
+#endif
+static inline atomic_uint_t
+atomic_cmp_set(atomic_t *lock, atomic_uint_t old,atomic_uint_t set);
+
+static inline atomic_int_t
+ngx_atomic_fetch_add(atomic_t *value, atomic_int_t add);
+
+
+
+
+
 
 // 自旋锁实现
 void spinlock(atomic_t *lock, atomic_int_t value, uint_t spin);
