@@ -10,6 +10,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_write,0,0,1)
 ZEND_ARG_INFO(0,arg)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_signal,0,0,1)
+ZEND_ARG_CALLABLE_INFO(0,func,0)
+ZEND_END_ARG_INFO()
+
+
 zend_class_entry lib_process_ce;
 zend_class_entry *lib_process_ce_ptr;
 
@@ -102,6 +107,27 @@ PHP_METHOD(process_obj,write)
     }
     RETURN_TRUE;
 }
+//进程注册信号
+PHP_METHOD(process_obj,signal)
+{
+    zend_fcall_info fci = empty_fcall_info;
+    zend_fcall_info_cache fcc = empty_fcall_info_cache;
+
+    ZEND_PARSE_PARAMETERS_START(1,1)
+    Z_PARAM_FUNC(fci,fcc)
+    //    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+
+
+    php_lib_fun func = {
+            fci,fcc,getThis()
+    };
+
+    funs[cid] = func;
+    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("slot"), cid TSRMLS_CC);
+    cid += 1;
+}
 
 PHP_METHOD(process_obj,getpid)
 {
@@ -121,6 +147,7 @@ const zend_function_entry lib_process_methods[] =
                 PHP_ME(process_obj,getpid,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,getppid,NULL,ZEND_ACC_PUBLIC)
                 PHP_ME(process_obj,write,arginfo_lib_process_write,ZEND_ACC_PUBLIC)
+                PHP_ME(process_obj,signal,arginfo_lib_process_signal,ZEND_ACC_PUBLIC)
                 PHP_FE_END
         };
 

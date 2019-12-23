@@ -59,5 +59,11 @@ typedef int  err_t;
 
 
 
+#define value_helper(n)   #n
+#define value(n)          value_helper(n)
+
+#define signal_helper(n)     SIG##n
+#define signal_value(n)      signal_helper(n)
+
 
 #endif /* LIB_H_ */

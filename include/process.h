@@ -34,7 +34,14 @@ typedef struct {
 typedef struct {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
+}callback;
+
+typedef struct {
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
     zval *obj;
+    //信号注册的回调函数
+    callback *sigcall;
 }php_lib_fun;
 
 #define MAX_PROCESSES         1024
