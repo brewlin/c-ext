@@ -1,27 +1,25 @@
 //
 // Created by Administrator on 2019/12/23 0023.
 //
-#include "signal.h"
+#include "../../include/signal.h"
 #include "php_lib.h"
 
 //向linux 注册信号，和回调监听方法
-int_t  init_signals()
+int_t  init_signal(signal_t sig)
 {
-    signal_t      *sig;
     struct sigaction   sa;
 
-    for (sig = signals; sig->signo != 0; sig++) {
-        memzero(&sa, sizeof(struct sigaction));
+    memzero(&sa, sizeof(struct sigaction));
 
-        if (sig->handler) {
-            sa.sa_sigaction = sig->handler;
-            sa.sa_flags = SA_SIGINFO;
+    if (sig->handler) {
+        sa.sa_sigaction = sig->handler;
+        sa.sa_flags = SA_SIGINFO;
 
-        } else {
-            sa.sa_handler = SIG_IGN;
-        }
+    } else {
+        sa.sa_handler = SIG_IGN;
+    }
 
-        sigemptyset(&sa.sa_mask);
+    sigemptyset(&sa.sa_mask);
         if (sigaction(sig->signo, &sa, NULL) == -1) {
 #if (VALGRIND)
             php_ptrintf(
@@ -32,7 +30,6 @@ int_t  init_signals()
             return ERROR;
 #endif
         }
-    }
 
     return OK;
 }

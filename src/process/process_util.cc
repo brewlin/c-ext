@@ -1,6 +1,7 @@
 #include "php_lib.h"
 #include "process.h"
 #include "channel.h"
+#include "signal.h"
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_construct,0,0,1)
 ZEND_ARG_CALLABLE_INFO(0,func,0)
@@ -107,27 +108,39 @@ PHP_METHOD(process_obj,write)
     }
     RETURN_TRUE;
 }
+void signal_handler(int signo, siginfo_t *siginfo, void *ucontext)
+{
+
+}
 //进程注册信号
 PHP_METHOD(process_obj,signal)
 {
+    long sig = 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &sig) == FAILURE)
+    {
+        RETURN_FALSE;
+    }
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
 
-    ZEND_PARSE_PARAMETERS_START(1,1)
+    ZEND_PARSE_PARAMETERS_START(2,1)
     Z_PARAM_FUNC(fci,fcc)
     //    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-
-
-    php_lib_fun func = {
-            fci,fcc,getThis()
+    callback signalcall  = {
+            fci,fcc
     };
 
-    funs[cid] = func;
-    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("slot"), cid TSRMLS_CC);
-    cid += 1;
+    funs[cid].sigcall = &signalcall;
+    signal_t  signal = {sig,
+                    "SIG",
+                    "",
+                    signal_handler
+    };
+    init_signal(signal);
 }
+
 
 PHP_METHOD(process_obj,getpid)
 {
