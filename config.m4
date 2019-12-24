@@ -6,8 +6,8 @@ Make sure that the comment is aligned:
 
 if test "$PHP_LIB" != "no"; then
 
-    # PHP_ADD_LIBRARY_WITH_PATH(uv, /usr/local/lib/, LIB_SHARED_LIBADD)
-    # PHP_SUBST(LIB_SHARED_LIBADD)
+    PHP_ADD_LIBRARY_WITH_PATH(uv, /usr/local/lib/, LIB_SHARED_LIBADD)
+    PHP_SUBST(LIB_SHARED_LIBADD)
 
     PHP_ADD_LIBRARY(pthread)
     LIB_ASM_DIR="thirdparty/boost/asm/"
@@ -53,6 +53,7 @@ if test "$PHP_LIB" != "no"; then
     lib_source_file="\
         lib.cc \
         src/fork/fork.cc \
+        src/timer/timer.cc \
         src/process/process.cc \
         src/process/process_util.cc \
         src/channel/channel.cc \

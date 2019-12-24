@@ -1,5 +1,6 @@
 #include "php_lib.h"
 #include "fork.h"
+#include "timer.h"
 PHP_MINIT_FUNCTION(lib)
 {
 //	lib_coroutine_util_init();
@@ -36,9 +37,17 @@ PHP_MINFO_FUNCTION(lib)
 	php_info_print_table_row(2, "Version", "1.0.0");
 	php_info_print_table_end();
 }
+//ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_create,0,0,1)
+//	ZEND_ARG_CALLABLE_INFO(0,func,0)
+//ZEND_END_ARG_INFO()
+//PHP_FUNCTION(lib_coroutine_create);
 
 const zend_function_entry lib_functions[] = {
-    PHP_FE(lib_fork,NULL)
+
+//	PHP_FE(lib_coroutine_create,arginfo_lib_coroutine_create)
+//	PHP_FALIAS(sgo, lib_coroutine_create, arginfo_lib_coroutine_create)
+    PHP_FE(lib_timer_test,NULL)
+	PHP_FE(lib_fork,NULL)
 	PHP_FE_END
 };
 

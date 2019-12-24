@@ -136,7 +136,7 @@ PHP_METHOD(process_obj,signal)
     signal_t  signal = {sig,
                     "SIG",
                     "",
-                    signal_handler
+//                    signal_handler
     };
     init_signal(signal);
 }

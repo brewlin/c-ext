@@ -18,7 +18,7 @@ typedef struct {
     int     signo;
     char   *signame;
     char   *name;
-    void  (*handler)(int signo, siginfo_t *siginfo, void *ucontext);
+//    void  (*handler)(int signo, siginfo_t *siginfo, void *ucontext);
 } signal_t;
 
 //signal_t  signals[] = {

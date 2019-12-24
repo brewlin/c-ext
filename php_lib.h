@@ -34,4 +34,7 @@ ZEND_END_MODULE_GLOBALS(lib)
 void lib_coroutine_util_init();
 void lib_sharemem_util_init();
 void lib_process_init();
+
+PHP_FUNCTION(lib_coroutine_create);
+
 #endif	/* PHP_LIB_H */

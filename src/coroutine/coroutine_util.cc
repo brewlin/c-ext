@@ -35,8 +35,11 @@ static PHP_METHOD(lib_coroutine_util,getCid);
 static PHP_METHOD(lib_coroutine_util,isExist);
 static PHP_METHOD(lib_coroutine_util,defer);
 
-PHP_METHOD(lib_coroutine_util,create)
+//PHP_METHOD(lib_coroutine_util,create)
+//{
+PHP_FUNCTION(lib_coroutine_create)
 {
+
     //????
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
@@ -126,7 +129,8 @@ PHP_METHOD(lib_coroutine_util,isExist)
 
 const zend_function_entry lib_coroutine_util_methods[] =
 {
-    PHP_ME(lib_coroutine_util,create,arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+        ZEND_FENTRY(create,ZEND_FN(lib_coroutine_create),arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+   // PHP_ME(lib_coroutine_util,create,arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,defer,arginfo_lib_coroutine_defer,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,yield,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,resume,arginfo_lib_coroutine_resume,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
