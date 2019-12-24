@@ -143,4 +143,6 @@ void lib_coroutine_util_init()
 {
     INIT_NS_CLASS_ENTRY(lib_coroutine_ce,"Lib","Coroutine",lib_coroutine_util_methods);
     lib_coroutine_ce_ptr = zend_register_internal_class(&lib_coroutine_ce TSRMLS_CC);
+    //给类增加短名机制
+    zend_register_class_alias("SCo", lib_coroutine_ce_ptr);
 }

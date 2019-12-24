@@ -68,6 +68,6 @@ typedef struct {
 //
 //        { 0, NULL, "", NULL }
 //};
-int_t  init_signal(signal_t sig);
+int  init_signal(signal_t sig);
 
 #endif //C_EXT_SIGNAL_H

@@ -1,7 +1,7 @@
 //
 // Created by Administrator on 2019/12/23 0023.
 //
-#include "../../include/signal.h"
+///#include "signal.h"
 #include "php_lib.h"
 
 //向linux 注册信号，和回调监听方法

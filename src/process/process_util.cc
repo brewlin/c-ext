@@ -1,7 +1,7 @@
 #include "php_lib.h"
 #include "process.h"
 #include "channel.h"
-#include "signal.h"
+//#include "signal.h"
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_process_construct,0,0,1)
 ZEND_ARG_CALLABLE_INFO(0,func,0)
