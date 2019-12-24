@@ -28,6 +28,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_isExist,0,0,1)
 ZEND_ARG_INFO(0,cid)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_sleep, 0, 0, 1)
+ZEND_ARG_INFO(0, seconds)
+ZEND_END_ARG_INFO()
+
+
 //?????????
 static PHP_METHOD(lib_coroutine_util,yield);
 static PHP_METHOD(lib_coroutine_util,resume);
@@ -125,6 +130,20 @@ PHP_METHOD(lib_coroutine_util,isExist)
     is_exist = (coroutine_iterator != user_yield_coros.end());
     RETURN_BOOL(is_exist);
 }
+PHP_METHOD(lib_coroutine_util,sleep)
+{
+    double seconds;
+
+    ZEND_PARSE_PARAMETERS_START(1,1)
+        Z_PARAM_DOUBLE(seconds)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+    if(UNEXPECTED(seconds < 0.001)){
+        php_error_docref(NULL,E_WARNING,"timer must be greater than or equal to 0.001");
+        RETURN_FALSE;
+    }
+    PHPCoroutine::sleep(seconds);
+    RETURN_TRUE;
+}
 
 
 const zend_function_entry lib_coroutine_util_methods[] =
@@ -136,6 +155,7 @@ const zend_function_entry lib_coroutine_util_methods[] =
     PHP_ME(lib_coroutine_util,resume,arginfo_lib_coroutine_resume,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,isExist,arginfo_lib_coroutine_isExist,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,getCid,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(lib_coroutine_util,sleep,arginfo_lib_coroutine_sleep,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 

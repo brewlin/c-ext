@@ -46,6 +46,7 @@ namespace Lib
     public:
         static void defer(php_lib_fci_fcc *defer_fci_fcc);
         static long create(zend_fcall_info_cache *fci_cache,uint32_t argc,zval *argv);
+        static int sleep(double seconds);
     protected:
         //主协程成员
         static php_coro_task main_task;
