@@ -144,7 +144,13 @@ PHP_METHOD(lib_coroutine_util,sleep)
     PHPCoroutine::sleep(seconds);
     RETURN_TRUE;
 }
-
+PHP_METHOD(lib_coroutine_util,scheduler)
+{
+    if(PHPCoroutine::scheduler() < 0 ){
+        RETURN_FALSE;
+    }
+    RETURN TRUE;
+}
 
 const zend_function_entry lib_coroutine_util_methods[] =
 {
@@ -156,6 +162,7 @@ const zend_function_entry lib_coroutine_util_methods[] =
     PHP_ME(lib_coroutine_util,isExist,arginfo_lib_coroutine_isExist,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,getCid,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,sleep,arginfo_lib_coroutine_sleep,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(lib_coroutine_util,scheduler,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
