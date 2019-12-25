@@ -24,6 +24,7 @@ namespace Lib
         }
         void yield();
         void resume();
+        static int sleep(double seconds);
 
     
     protected:

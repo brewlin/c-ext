@@ -8,7 +8,24 @@
 #include "lib.h"
 #include "php_lib.h"
 
-typedef void (*spawn_proc_pt) (long cid);
+//typedef void (*spawn_proc_pt) (void *data);
+typedef void (*spawn_proc_pt) (int_t slot);
+
+
+typedef struct {
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+}callback;
+
+typedef struct {
+    zend_fcall_info fci;
+    zend_fcall_info_cache fcc;
+    //当前对象
+    zval *obj;
+    //信号注册的回调函数
+    callback *sigcall;
+}php_lib_func;
+
 
 
 typedef struct {
@@ -21,6 +38,7 @@ typedef struct {
    //派生的子进程回调函数，创建子进程后会调用该函数
    spawn_proc_pt proc;
    void *data;
+   php_lib_func func;
    char *name;
 
     unsigned            respawn:1;
@@ -31,18 +49,6 @@ typedef struct {
 
 }process_t;
 
-typedef struct {
-    zend_fcall_info fci;
-    zend_fcall_info_cache fcc;
-}callback;
-
-typedef struct {
-    zend_fcall_info fci;
-    zend_fcall_info_cache fcc;
-    zval *obj;
-    //信号注册的回调函数
-    callback *sigcall;
-}php_lib_fun;
 
 #define MAX_PROCESSES         1024
 #define INVALID_PID  -1
@@ -57,7 +63,9 @@ typedef struct {
 extern pid_t      ce_pid;
 extern pid_t      ce_parent;
 extern process_t  processes[MAX_PROCESSES];
+//进程索引编号
+extern int_t      process_slot;
 
-pid_t spwan_process(spawn_proc_pt proc,void *data,char *name,int_t respawn);
+pid_t spwan_process(spawn_proc_pt proc,int_t slot);
 
 #endif //C_EXT_PROCESS_H

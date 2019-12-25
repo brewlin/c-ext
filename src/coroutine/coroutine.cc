@@ -1,4 +1,5 @@
 #include "coroutine.h"
+#include "timer.h"
 
 using Lib::Coroutine;
 
@@ -48,4 +49,19 @@ void Coroutine::resume()
         coroutines.erase(cid);
         delete this;
     }
+}
+static void sleep_timeout(uv_timer_t *timer)
+{
+    ((Coroutine *)timer->data)->resume();
+}
+int Coroutine::sleep(double seconds)
+{
+    Coroutine* co = Coroutine::get_current();
+    uv_timer_t timer;
+    timer.data = co;
+    uv_timer_init(uv_default_loop(),&timer);
+    uv_timer_start(&timer,sleep_timeout,seconds*1000,0);
+    co->yield();
+    return 0;
+
 }

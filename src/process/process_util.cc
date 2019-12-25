@@ -20,8 +20,6 @@ zend_class_entry lib_process_ce;
 zend_class_entry *lib_process_ce_ptr;
 
 
-static long cid = 0;
-php_lib_fun funs[MAX_PROCESSES * 10];
 //struct php_lib_fci_fcc
 //{
 //    zend_fcall_info fci;
@@ -38,18 +36,23 @@ PHP_METHOD(process_obj,__construct)
 //    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    php_lib_fun func = {
+    php_lib_func func = {
             fci,fcc,getThis()
     };
-
-    funs[cid] = func;
-    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("slot"), cid TSRMLS_CC);
-    cid += 1;
+    int b = 10;
+//    processes[process_slot].data = &func;
+    processes[process_slot].func = func;
+    zend_update_property_long(lib_process_ce_ptr,getThis(), ZEND_STRL("slot"), process_slot TSRMLS_CC);
+    //进程自增索引加+1
+    process_slot += 1;
 }
 //子进程 主事件循环的地方
-void worker_process_cycle(long cid)
+void worker_process_cycle(int_t slot)
+//void worker_process_cycle(void *data)
 {
-    php_lib_fun func = funs[cid];
+//    php_lib_func *call = (php_lib_func *)processes[cid].data;
+    php_lib_func func = processes[slot].func;
+
     zval result;
     func.fci.params = func.obj;
     func.fci.param_count = 1;
@@ -57,6 +60,7 @@ void worker_process_cycle(long cid)
     if(zend_call_function(&func.fci,&func.fcc) != SUCCESS){
         return;
     }
+
     //die child processs
     exit(0);
 
@@ -65,10 +69,10 @@ void worker_process_cycle(long cid)
 PHP_METHOD(process_obj,start)
 {
     zval *re,r;
-    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "slot", sizeof("slot")-1, 1,&r);
+    long slot = Z_LVAL_P(re);
 
-    long cid = Z_LVAL_P(re);
-    spwan_process(worker_process_cycle,NULL,processes[cid].name,cid);
+    spwan_process(worker_process_cycle,slot);
 }
 
 PHP_METHOD(process_obj,__destruct)
@@ -77,7 +81,7 @@ PHP_METHOD(process_obj,__destruct)
 PHP_METHOD(process_obj,read)
 {
     zval *re,r;
-    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "slot", sizeof("slot")-1, 1,&r);
     long slot = Z_LVAL_P(re);
 
     channel_t      ch;
@@ -95,7 +99,7 @@ PHP_METHOD(process_obj,write)
         RETURN_FALSE;
     }
     zval *re,r;
-    re = zend_read_property(lib_process_ce_ptr,getThis(), "pid", sizeof("slot")-1, 1,&r);
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "slot", sizeof("slot")-1, 1,&r);
     long slot = Z_LVAL_P(re);
 
     channel_t  ch;
@@ -132,7 +136,14 @@ PHP_METHOD(process_obj,signal)
             fci,fcc
     };
 
-    funs[cid].sigcall = &signalcall;
+    zval *re,r;
+    re = zend_read_property(lib_process_ce_ptr,getThis(), "slot", sizeof("slot")-1, 1,&r);
+    long slot = Z_LVAL_P(re);
+
+    php_lib_func *temp = (php_lib_func *)processes[slot].data;
+    temp->sigcall = &signalcall;
+    processes[slot].data = temp;
+
     signal_t  signal = {sig,
                     "SIG",
                     "",
