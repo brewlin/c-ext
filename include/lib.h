@@ -39,6 +39,8 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <sys/stat.h>
+//引入epoll
+#include <sys/epoll.h>
 
 
 typedef unsigned int uint_t;
@@ -66,5 +68,20 @@ typedef int  err_t;
 #define signal_helper(n)     SIG##n
 #define signal_value(n)      signal_helper(n)
 
+typedef struct
+{
+    //epollfd  => epoll_create
+    int epollfd;
+    //events数组大小
+    int ncap;
+    //触发的events事件
+    struct epoll_event *events;
+}lib_poll_t;
 
+typedef struct
+{
+    lib_poll_t poll;
+}lib_global_t;
+//申明在其他地方定义的全局变量
+extern lib_global_t LibG;
 #endif /* LIB_H_ */

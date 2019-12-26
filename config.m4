@@ -52,13 +52,14 @@ if test "$PHP_LIB" != "no"; then
 
     lib_source_file="\
         lib.cc \
+        base.cc \
         process_util.cc \
         sharemem_util.cc \
         server_coro_util.cc \
 
         src/log/log.c \
         src/error/error.c \
-        src/server/socket.cc \
+        src/socket/socket.cc \
         src/fork/fork.cc \
         src/timer/timer.cc \
         src/process/process.cc \
