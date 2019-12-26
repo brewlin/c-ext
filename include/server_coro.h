@@ -8,7 +8,7 @@
 #include "php_lib.h"
 #include "socket.h"
 
-
+#include "error.h"
 
 
 #endif //C_EXT_SERVER_CORO_H

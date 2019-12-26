@@ -75,3 +75,15 @@ ssize_t libsocket_recv(int sock,void *buf,size_t len,int flag)
     }
     return ret;
 }
+
+ssize_t libsocket_send(int sock, void *buf, size_t len, int flag)
+{
+    ssize_t ret;
+
+    ret = send(sock, buf, len, flag);
+    if (ret < 0)
+    {
+        php_printf("Error has occurred: (errno %d) %s", errno, strerror(errno));
+    }
+    return ret;
+}
