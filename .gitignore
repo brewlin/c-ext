@@ -4,7 +4,6 @@
 *.sub
 configure
 ac*
-auto*
 lt*
 M*
 m*
@@ -19,7 +18,6 @@ sht*
 *.lo
 *.o
 *.status
-process*
 config.h
 .deps
 lib*
