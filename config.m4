@@ -52,12 +52,12 @@ if test "$PHP_LIB" != "no"; then
 
     lib_source_file="\
         lib.cc \
+        process_util.cc \
+        sharemem_util.cc \
         src/fork/fork.cc \
         src/timer/timer.cc \
         src/process/process.cc \
-        src/process/process_util.cc \
         src/channel/channel.cc \
-        src/memory/ShareMemUtil.cc \
         src/memory/ShareMem.cc \
         src/coroutine/context.cc \
         ${LIB_ASM_DIR}make_${LIB_CONTEXT_ASM_FILE} \
