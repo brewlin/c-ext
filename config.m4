@@ -54,6 +54,9 @@ if test "$PHP_LIB" != "no"; then
         lib.cc \
         process_util.cc \
         sharemem_util.cc \
+        server_coro_util.cc \
+
+        src/server/socket.cc \
         src/fork/fork.cc \
         src/timer/timer.cc \
         src/process/process.cc \

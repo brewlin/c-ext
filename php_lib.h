@@ -34,7 +34,17 @@ ZEND_END_MODULE_GLOBALS(lib)
 void lib_coroutine_util_init();
 void lib_sharemem_util_init();
 void lib_process_init();
+void lib_coroutine_server_coro_init();
+
 
 PHP_FUNCTION(lib_coroutine_create);
+
+
+
+inline zval *lib_zend_read_property(zend_class_entry *class_ptr, zval *obj, const char *s, int len, int silent)
+{
+    zval rv;
+    return zend_read_property(class_ptr, obj, s, len, silent, &rv);
+}
 
 #endif	/* PHP_LIB_H */
