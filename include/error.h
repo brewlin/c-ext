@@ -13,10 +13,9 @@ enum libErrorCode
      * connection error
      */
     LIB_ERROR_SESSION_CLOSED_BY_SERVER = 1001,
-    LIB_ERROR_SESSION_CLOSED_BY_CLIENT,
+    LIB_ERROR_SESSION_CLOSED_BY_CLIENT
 };
-//extern 兼容 c c++ 语法
-extern const char* lib_strerror(int code);
+const char* lib_strerror(int code);
 
 
 #endif //C_EXT_ERROR_H

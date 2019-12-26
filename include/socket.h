@@ -15,7 +15,7 @@ enum libsocket_type
 
 
 
-int libsocket_create(int type);
+int libsocket_create(int domain,int type,int protocol);
 
 int libsocket_bind(int sock,int type,char *host,int port);
 
@@ -26,5 +26,7 @@ int libsocket_accept(int sock);
 ssize_t libsocket_recv(int sock,void *buf,size_t len,int flag);
 
 ssize_t libsocket_send(int sock, void *buf, size_t len, int flag);
+
+int libsocket_set_nonblock(int sock);
 
 #endif //C_EXT_SOCKET_H

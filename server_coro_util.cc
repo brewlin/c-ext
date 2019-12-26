@@ -36,7 +36,7 @@ PHP_METHOD(server_obj,__construct)
         Z_PARAM_LONG(zport)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    sock = libsocket_create(LIB_SOCK_TCP);
+    sock = libsocket_create(AF_INET,SOCK_STREAM,0);
     //将zhost 转换为字符串
     libsocket_bind(sock,LIB_SOCK_TCP,Z_STRVAL_P(zhost),zport);
     libsocket_listen(sock);

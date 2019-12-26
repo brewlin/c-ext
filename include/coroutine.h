@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #define DEFAULT_C_STACK_SIZE          (2 *1024 * 1024)
-namespace Lib
+namespace lib
 {
     class Coroutine
     {
@@ -25,6 +25,11 @@ namespace Lib
         void yield();
         void resume();
         static int sleep(double seconds);
+        static inline Coroutine* get_by_cid(long cid)
+        {
+            auto i = coroutines.find(cid);
+            return i != coroutines.end() ? i->second: nullptr;
+        }
 
     
     protected:

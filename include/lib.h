@@ -60,13 +60,21 @@ typedef int  err_t;
 
 #define ncpu 3
 
-
-
-#define value_helper(n)   #n
-#define value(n)          value_helper(n)
+//#define value_helper(n)   ##n
+//#define value(n) value_helper(n)
 
 #define signal_helper(n)     SIG##n
 #define signal_value(n)      signal_helper(n)
+
+enum libevent_type
+{
+    LIB_EVENT_NULL   = 0,
+    LIB_EVENT_DEAULT = 1u << 8,
+    LIB_EVENT_READ   = 1u << 9,
+    LIB_EVENT_WRITE  = 1u << 10,
+    LIB_EVENT_RDWR   = LIB_EVENT_READ | LIB_EVENT_WRITE,
+    LiB_EVENT_ERROR  = 1u << 11,
+};
 
 typedef struct
 {
@@ -80,8 +88,44 @@ typedef struct
 
 typedef struct
 {
-    lib_poll_t poll;
+    //定义指针类型，方便判断是否初始化申请过内存if(!poll)
+    lib_poll_t *poll;
 }lib_global_t;
 //申明在其他地方定义的全局变量
 extern lib_global_t LibG;
+
+static inline uint64_t touint64(int fd, int id)
+{
+    uint64_t ret = 0;
+    ret |= ((uint64_t)fd) << 32;
+    ret |= ((uint64_t)id);
+
+    return ret;
+}
+
+static inline void init_poll()
+{
+    size_t size;
+    LibG.poll = (lib_poll_t *)malloc(sizeof(lib_poll_t));
+
+    LibG.poll->epollfd = epoll_create(256);
+    LibG.poll->ncap = 16;
+    size = sizeof(struct epoll_event) * LibG.poll->ncap;
+    //申请events 内存
+    LibG.poll->events = (struct epoll_event *)malloc(size);
+    memset(LibG.poll->events,0,size);
+
+}
+
+static inline void fromuint64(uint64_t v, int *fd, int *id)
+{
+    *fd = (int)(v >> 32);
+    *id = (int)(v & 0xffffffff);
+}
+static inline void free_poll()
+{
+    free(LibG.poll->events);
+    free(LibG.poll);
+}
+
 #endif /* LIB_H_ */

@@ -39,7 +39,7 @@ struct php_lib_fci_fcc
     zend_fcall_info_cache fcc;
 };
 
-namespace Lib
+namespace lib
 {
     class PHPCoroutine
     {

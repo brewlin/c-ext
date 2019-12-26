@@ -1,22 +1,15 @@
 #include "socket.h"
+#include "log.h"
 
-int libsocket_create(int type)
+int libsocket_create(int domain,int type,int protocol)
 {
-    int _domain;
-    int _type;
-
-    if(type == LIB_SOCK_TCP)
+    int sock;
+    sock = socket(domain,type,protocol);
+    if(sock < 0 )
     {
-        _domain = AF_INET;
-        _type = SOCK_STREAM;
-    }else if(type == LIB_SOCK_UDP)
-    {
-        _domain = AF_INET;
-        _type = SOCK_DGRAM;
-    }else{
-        return -1;
+        libWarn("Error has occurred: (errno %d) %s", errno, strerror(errno));
     }
-    return socket(_domain,_type,0);
+    return sock;
 }
 
 int libsocket_bind(int sock,int type,char *host,int port)
@@ -86,4 +79,21 @@ ssize_t libsocket_send(int sock, void *buf, size_t len, int flag)
         php_printf("Error has occurred: (errno %d) %s", errno, strerror(errno));
     }
     return ret;
+}
+
+int libsocket_set_nonblock(int sock)
+{
+    int flags;
+
+    flags = fcntl(sock, F_GETFL, 0);
+    if (flags < 0) {
+        libWarn("Error has occurred: (errno %d) %s", errno, strerror(errno));
+        return -1;
+    }
+    flags = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+    if (flags < 0) {
+        libWarn("Error has occurred: (errno %d) %s", errno, strerror(errno));
+        return -1;
+    }
+    return 0;
 }

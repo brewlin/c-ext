@@ -1,7 +1,7 @@
 #include "coroutine.h"
 #include "timer.h"
 
-using Lib::Coroutine;
+using lib::Coroutine;
 
 size_t Coroutine::stack_size = DEFAULT_C_STACK_SIZE;
 Coroutine* Coroutine::current  = nullptr;
