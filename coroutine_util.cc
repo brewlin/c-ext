@@ -30,11 +30,11 @@ ZEND_END_ARG_INFO()
 
 
 //?????????
-static PHP_METHOD(lib_coroutine_util,yield);
-static PHP_METHOD(lib_coroutine_util,resume);
-static PHP_METHOD(lib_coroutine_util,getCid);
-static PHP_METHOD(lib_coroutine_util,isExist);
-static PHP_METHOD(lib_coroutine_util,defer);
+//static PHP_METHOD(lib_coroutine_util,yield);
+//static PHP_METHOD(lib_coroutine_util,resume);
+//static PHP_METHOD(lib_coroutine_util,getCid);
+//static PHP_METHOD(lib_coroutine_util,isExist);
+//static PHP_METHOD(lib_coroutine_util,defer);
 
 //PHP_METHOD(lib_coroutine_util,create)
 //{
@@ -50,13 +50,13 @@ PHP_FUNCTION(lib_coroutine_create)
         Z_PARAM_FUNC(fci,fcc)
         Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-//    long cid = PHPCoroutine::create(&fcc,fci.param_count,fci.params);
-//    RETURN_LONG(cid);
-     fci.retval = &result;
-     if(zend_call_function(&fci,&fcc) != SUCCESS){
-         return;
-     }
-     *return_value = result;
+    long cid = PHPCoroutine::create(&fcc,fci.param_count,fci.params);
+    RETURN_LONG(cid);
+//     fci.retval = &result;
+//     if(zend_call_function(&fci,&fcc) != SUCCESS){
+//         return;
+//     }
+//     *return_value = result;
 }
 PHP_METHOD(lib_coroutine_util,defer)
 {
@@ -175,5 +175,5 @@ void lib_coroutine_util_init()
     INIT_NS_CLASS_ENTRY(lib_coroutine_ce,"Lib","Coroutine",lib_coroutine_util_methods);
     lib_coroutine_ce_ptr = zend_register_internal_class(&lib_coroutine_ce TSRMLS_CC);
     //给类增加短名机制
-    zend_register_class_alias("LCo", lib_coroutine_ce_ptr);
+    zend_register_class_alias("Cco", lib_coroutine_ce_ptr);
 }
