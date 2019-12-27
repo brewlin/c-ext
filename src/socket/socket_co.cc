@@ -58,3 +58,32 @@ bool Socket::wait_event(int event)
     co->yield();
     return true;
 }
+ssize_t Socket::recv(void *buf,size_t len)
+{
+    int ret;
+    ret = libsocket_recv(sockfd,buf,len,0);
+    if(ret < 0 && errno == EAGAIN){
+        wait_event(LIB_EVENT_READ);
+        ret  = libsocket_recv(sockfd,buf,len,0);
+    }
+    return ret;
+}
+ssize_t Socket::send(const void *buf, size_t len)
+{
+    int ret;
+
+    ret = libsocket_send(sockfd, buf, len, 0);
+    if (ret < 0 && errno == EAGAIN)
+    {
+        wait_event(LIB_EVENT_WRITE);
+        ret = libsocket_send(sockfd, buf, len, 0);
+    }
+    return ret;
+}
+int Socket::close()
+{
+    return libsocket_close(sockfd);
+}
+Socket::~Socket()
+{
+}

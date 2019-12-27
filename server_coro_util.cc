@@ -1,5 +1,9 @@
 #include "server_coro.h"
 #include "error.h"
+#include "socket_co.h"
+
+using namespace lib::coroutine;
+
 
 zend_class_entry lib_coroutine_server_coro_ce;
 zend_class_entry *lib_coroutine_server_coro_ce_ptr;
@@ -27,21 +31,24 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(server_obj,__construct)
 {
-    int sock;
     zval *zhost;
     zend_long zport;
+
+    zval zsock;
 
     ZEND_PARSE_PARAMETERS_START(2,2)
         Z_PARAM_ZVAL(zhost)
         Z_PARAM_LONG(zport)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    sock = libsocket_create(AF_INET,SOCK_STREAM,0);
-    //将zhost 转换为字符串
-    libsocket_bind(sock,LIB_SOCK_TCP,Z_STRVAL_P(zhost),zport);
-    libsocket_listen(sock);
+    Socket *sock = new Socket(AF_INET,SOCK_STREAM,0);
+    sock->bind(LIB_SOCK_TCP,Z_STRVAL_P(zhost),zport);
+    sock->listen();
+
+    ZVAL_PTR(&zsock,sock);
+
     //更新类的属性
-    zend_update_property_long(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("sock"), sock);
+    zend_update_property(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("zsock"), &zsock);
     zend_update_property_string(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("host"), Z_STRVAL_P(zhost));
     zend_update_property_long(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("port"), zport);
 }
@@ -49,11 +56,13 @@ PHP_METHOD(server_obj,__construct)
 PHP_METHOD(server_obj, accept)
 {
     zval *zsock;
+    Socket *sock;
     int connfd;
 
     //读取对象上的属性
-    zsock = lib_zend_read_property(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("sock"), 0);
-    connfd = libsocket_accept(Z_LVAL_P(zsock));
+    zsock = lib_zend_read_property(lib_coroutine_server_coro_ce_ptr, getThis(), ZEND_STRL("zsock"), 0);
+    sock = (Socket *)Z_PTR_P(zsock);
+    connfd = sock->accept();
     RETURN_LONG(connfd);
 }
 
@@ -124,9 +133,10 @@ void lib_coroutine_server_coro_init()
     INIT_NS_CLASS_ENTRY(lib_coroutine_server_coro_ce, "Lib", "Coroutine\\Server", lib_server_coro_methods);
     lib_coroutine_server_coro_ce_ptr = zend_register_internal_class(&lib_coroutine_server_coro_ce TSRMLS_CC);
     // Registered in the Zend Engine
-    zend_declare_property_long(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("sock"), -1, ZEND_ACC_PUBLIC);
-    zend_declare_property_string(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("host"), "", ZEND_ACC_PUBLIC);
+    zval *zsock = (zval *)malloc(sizeof(zval));
+    zend_declare_property(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("zsock"), zsock, ZEND_ACC_PUBLIC);    zend_declare_property_string(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("host"), "", ZEND_ACC_PUBLIC);
     zend_declare_property_long(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("port"), -1, ZEND_ACC_PUBLIC);
+
 
     zend_declare_property_long(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("errCode"), 0, ZEND_ACC_PUBLIC);
     zend_declare_property_string(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("errMsg"), "", ZEND_ACC_PUBLIC);

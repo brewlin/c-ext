@@ -56,16 +56,21 @@ if test "$PHP_LIB" != "no"; then
         process_util.cc \
         sharemem_util.cc \
         server_coro_util.cc \
+        coroutine_util.cc \
 
         src/log/log.c \
         src/error/error.cc \
         src/socket/socket.cc \
         src/socket/socket_co.cc \
+
         src/fork/fork.cc \
         src/timer/timer.cc \
         src/process/process.cc \
         src/channel/channel.cc \
         src/memory/ShareMem.cc \
+
+        src/coroutine/coroutine.cc \
+        src/coroutine/lib_coroutine.cc \
         src/coroutine/context.cc \
         ${LIB_ASM_DIR}make_${LIB_CONTEXT_ASM_FILE} \
         ${LIB_ASM_DIR}jump_${LIB_CONTEXT_ASM_FILE}

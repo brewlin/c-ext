@@ -2,14 +2,10 @@
 #include "coroutine.h"
 #include "php_lib.h"
 
-using Lib::PHPCoroutine;
-using Lib::Coroutine;
+using lib::PHPCoroutine;
+using lib::Coroutine;
 //创建一个无序字典
 static std::unordered_map<long, Coroutine *> user_yield_coros;
-//????????php?????
-ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_create,0,0,1)
-ZEND_ARG_CALLABLE_INFO(0,func,0)
-ZEND_END_ARG_INFO()
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_defer,0,0,1)
@@ -64,12 +60,16 @@ PHP_FUNCTION(lib_coroutine_create)
 }
 PHP_METHOD(lib_coroutine_util,defer)
 {
+    zend_fcall_info fci = empty_fcall_info;
+    zend_fcall_info_cache fcc = empty_fcall_info_cache;
+    php_lib_fci_fcc *defer_fci_fcc;
+
     ZEND_PARSE_PARAMETERS_START(1,-1)
     Z_PARAM_FUNC(fci,fcc)
     Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    defer_fci_fcc = (php_lib_fci_fcc *)emalloc(sizeof(php_study_fci_fcc));
+    defer_fci_fcc = (php_lib_fci_fcc *)emalloc(sizeof(php_lib_fci_fcc));
 
     ZEND_PARSE_PARAMETERS_START(1, -1)
     Z_PARAM_FUNC(fci, fcc)
@@ -149,12 +149,12 @@ PHP_METHOD(lib_coroutine_util,scheduler)
     if(PHPCoroutine::scheduler() < 0 ){
         RETURN_FALSE;
     }
-    RETURN TRUE;
+    RETURN_TRUE;
 }
 
 const zend_function_entry lib_coroutine_util_methods[] =
 {
-        ZEND_FENTRY(create,ZEND_FN(lib_coroutine_create),arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    ZEND_FENTRY(create,ZEND_FN(lib_coroutine_create),arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
    // PHP_ME(lib_coroutine_util,create,arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,defer,arginfo_lib_coroutine_defer,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,yield,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -175,5 +175,5 @@ void lib_coroutine_util_init()
     INIT_NS_CLASS_ENTRY(lib_coroutine_ce,"Lib","Coroutine",lib_coroutine_util_methods);
     lib_coroutine_ce_ptr = zend_register_internal_class(&lib_coroutine_ce TSRMLS_CC);
     //给类增加短名机制
-    zend_register_class_alias("SCo", lib_coroutine_ce_ptr);
+    zend_register_class_alias("LCo", lib_coroutine_ce_ptr);
 }

@@ -25,8 +25,9 @@ int libsocket_accept(int sock);
 
 ssize_t libsocket_recv(int sock,void *buf,size_t len,int flag);
 
-ssize_t libsocket_send(int sock, void *buf, size_t len, int flag);
+ssize_t libsocket_send(int sock, const void *buf, size_t len, int flag);
 
+int libsocket_close(int fd);
 int libsocket_set_nonblock(int sock);
 
 #endif //C_EXT_SOCKET_H

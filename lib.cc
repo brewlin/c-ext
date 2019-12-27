@@ -1,6 +1,7 @@
 #include "php_lib.h"
 #include "fork.h"
 #include "timer.h"
+#include "lib_coroutine.h"
 PHP_MINIT_FUNCTION(lib)
 {
 //	lib_coroutine_util_init();
@@ -48,6 +49,7 @@ const zend_function_entry lib_functions[] = {
 //	PHP_FE(lib_coroutine_create,arginfo_lib_coroutine_create)
 //	PHP_FALIAS(sgo, lib_coroutine_create, arginfo_lib_coroutine_create)
     PHP_FE(lib_timer_test,NULL)
+    PHP_FALIAS(cgo,lib_coroutine_create,arginfo_lib_coroutine_create)
 	PHP_FE(lib_fork,NULL)
 	PHP_FE_END
 };

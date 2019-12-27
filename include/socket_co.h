@@ -7,9 +7,8 @@
 
 #include "lib.h"
 
-namespace lib {
-    namespace coroutine{
-        class Socket
+namespace lib {    namespace coroutine {
+class Socket
         {
 
         private:

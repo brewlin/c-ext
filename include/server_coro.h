@@ -7,6 +7,7 @@
 
 #include "php_lib.h"
 #include "socket.h"
+#include "socket_co.h"
 
 #include "error.h"
 
