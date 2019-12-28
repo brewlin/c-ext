@@ -28,14 +28,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_sleep, 0, 0, 1)
 ZEND_ARG_INFO(0, seconds)
 ZEND_END_ARG_INFO()
 
-
-//?????????
-//static PHP_METHOD(lib_coroutine_util,yield);
-//static PHP_METHOD(lib_coroutine_util,resume);
-//static PHP_METHOD(lib_coroutine_util,getCid);
-//static PHP_METHOD(lib_coroutine_util,isExist);
-//static PHP_METHOD(lib_coroutine_util,defer);
-
 //PHP_METHOD(lib_coroutine_util,create)
 //{
 PHP_FUNCTION(lib_coroutine_create)
