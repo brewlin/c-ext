@@ -197,3 +197,4 @@ int PHPCoroutine::scheduler()
 
     return 0;
 }
+

@@ -1,5 +1,16 @@
 #include "socket.h"
 #include "log.h"
+#include "coroutine.h"
+#include "socket_co.h"
+
+using lib::Coroutine;
+using lib::coroutine::Socket;
+
+char * Socket::read_buffer = nullptr; //
+size_t Socket::read_buffer_len = 0; //
+char * Socket::write_buffer = nullptr; //
+size_t Socket::write_buffer_len = 0; //
+
 
 int libsocket_create(int domain,int type,int protocol)
 {

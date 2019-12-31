@@ -6,6 +6,12 @@
 using lib::coroutine::Socket;
 using lib::Coroutine;
 
+Socket::Socket(int fd)
+{
+    sockfd = fd;
+    libsocket_set_nonblock(sockfd);
+}
+
 Socket::Socket(int domain, int type, int protocol)
 {
     sockfd = libsocket_create(domain, type, protocol);
@@ -30,12 +36,10 @@ int Socket::accept()
 {
     int connfd;
 
-    connfd = libsocket_accept(sockfd);
-    if (connfd < 0 && errno == EAGAIN)
-    {
-        wait_event(LIB_EVENT_READ);
+    do{
         connfd = libsocket_accept(sockfd);
-    }
+        printf("%d",connfd);
+    } while (connfd < 0 && errno == EAGAIN && wait_event(LIB_EVENT_READ));
 
     return connfd;
 }
@@ -48,7 +52,10 @@ bool Socket::wait_event(int event)
 
     co = Coroutine::get_current();
     id = co->get_cid();
-
+    if(!LibG.poll)
+    {
+        init_poll();
+    }
     ev = LibG.poll->events;
 
     ev->events = event == LIB_EVENT_READ ? EPOLLIN : EPOLLOUT;
@@ -61,23 +68,20 @@ bool Socket::wait_event(int event)
 ssize_t Socket::recv(void *buf,size_t len)
 {
     int ret;
-    ret = libsocket_recv(sockfd,buf,len,0);
-    if(ret < 0 && errno == EAGAIN){
-        wait_event(LIB_EVENT_READ);
-        ret  = libsocket_recv(sockfd,buf,len,0);
-    }
+    do{
+        ret = libsocket_recv(sockfd,buf,len,0);
+    } while (ret < 0 && errno == EAGAIN && wait_event(LIB_EVENT_READ));
+
     return ret;
 }
 ssize_t Socket::send(const void *buf, size_t len)
 {
     int ret;
 
-    ret = libsocket_send(sockfd, buf, len, 0);
-    if (ret < 0 && errno == EAGAIN)
-    {
-        wait_event(LIB_EVENT_WRITE);
+    do{
         ret = libsocket_send(sockfd, buf, len, 0);
-    }
+    } while (ret < 0 && errno == EAGAIN && wait_event(LIB_EVENT_WRITE));
+
     return ret;
 }
 int Socket::close()
@@ -86,4 +90,36 @@ int Socket::close()
 }
 Socket::~Socket()
 {
+}
+
+//分配全局recv write 数据以缓冲区
+//因为每个协程是同步执行，也就是同一时间只会有一个协程读写全局缓冲区，不会发生冲突
+int Socket::init_read_buffer()
+{
+    if (!read_buffer)
+    {
+        read_buffer = (char *)malloc(65536);
+        if (read_buffer == NULL)
+        {
+            return -1;
+        }
+        read_buffer_len = 65536;
+    }
+
+    return 0;
+}
+
+int Socket::init_write_buffer()
+{
+    if (!write_buffer)
+    {
+        write_buffer = (char *)malloc(65536);
+        if (write_buffer == NULL)
+        {
+            return -1;
+        }
+        write_buffer_len = 65536;
+    }
+
+    return 0;
 }
