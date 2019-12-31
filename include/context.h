@@ -12,6 +12,7 @@ namespace lib
     {
     public:
         Context(size_t stack_size,coroutine_func_t fn,void *private_data);
+        ~Context();
         static void context_func(void *arg);
         inline bool is_end()
         {
