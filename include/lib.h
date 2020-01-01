@@ -102,30 +102,19 @@ static inline uint64_t touint64(int fd, int id)
 
     return ret;
 }
-
-static inline void init_poll()
-{
-    size_t size;
-    LibG.poll = (lib_poll_t *)malloc(sizeof(lib_poll_t));
-
-    LibG.poll->epollfd = epoll_create(256);
-    LibG.poll->ncap = 16;
-    size = sizeof(struct epoll_event) * LibG.poll->ncap;
-    //申请events 内存
-    LibG.poll->events = (struct epoll_event *)malloc(size);
-    memset(LibG.poll->events,0,size);
-
-}
-
 static inline void fromuint64(uint64_t v, int *fd, int *id)
 {
     *fd = (int)(v >> 32);
     *id = (int)(v & 0xffffffff);
 }
-static inline void free_poll()
-{
-    free(LibG.poll->events);
-    free(LibG.poll);
-}
+
+int init_poll();
+int free_poll();
+
+int event_init();
+int event_wait();
+int event_free();
+
+
 
 #endif /* LIB_H_ */
