@@ -32,3 +32,11 @@ bool Context::swap_in()
     jump_fcontext(&swap_ctx_,ctx_,(intptr_t)this,true);
     return true;
 }
+Context::~Context()
+{
+    if (swap_ctx_)
+    {
+        free(stack_);
+        stack_ = NULL;
+    }
+}

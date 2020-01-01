@@ -58,7 +58,7 @@ if test "$PHP_LIB" != "no"; then
         server_coro_util.cc \
         coroutine_util.cc \
 
-        src/log/log.c \
+        src/log/log.cc \
         src/error/error.cc \
         src/socket/socket.cc \
         src/socket/socket_co.cc \
