@@ -69,7 +69,13 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_coroutine_create,0,0,1)
 ZEND_ARG_CALLABLE_INFO(0,func,0)
 ZEND_END_ARG_INFO()
 
+
+
+
+
 PHP_FUNCTION(lib_coroutine_create);
+PHP_FUNCTION(event_init);
+PHP_FUNCTION(event_wait);
 
 
 #endif // !1LIB_COROUTINE_#define LIB_COROUTINE_HH

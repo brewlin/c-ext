@@ -1,7 +1,7 @@
 #include "lib_coroutine.h"
 #include "coroutine.h"
 #include "php_lib.h"
-
+#include "lib.h"
 using lib::PHPCoroutine;
 using lib::Coroutine;
 //创建一个无序字典
@@ -136,14 +136,27 @@ PHP_METHOD(lib_coroutine_util,sleep)
     PHPCoroutine::sleep(seconds);
     RETURN_TRUE;
 }
-PHP_METHOD(lib_coroutine_util,scheduler)
+PHP_FUNCTION(lib_event_init)
 {
-    if(PHPCoroutine::scheduler() < 0 ){
+    int ret;
+    ret = event_init();
+    if (ret < 0)
+    {
         RETURN_FALSE;
     }
     RETURN_TRUE;
 }
 
+PHP_FUNCTION(lib_event_wait)
+{
+    int ret;
+    ret = event_wait();
+    if (ret < 0)
+    {
+        RETURN_FALSE;
+    }
+    RETURN_TRUE;
+}
 const zend_function_entry lib_coroutine_util_methods[] =
 {
     ZEND_FENTRY(create,ZEND_FN(lib_coroutine_create),arginfo_lib_coroutine_create,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -154,7 +167,6 @@ const zend_function_entry lib_coroutine_util_methods[] =
     PHP_ME(lib_coroutine_util,isExist,arginfo_lib_coroutine_isExist,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,getCid,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(lib_coroutine_util,sleep,arginfo_lib_coroutine_sleep,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(lib_coroutine_util,scheduler,arginfo_lib_coroutine_void,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
