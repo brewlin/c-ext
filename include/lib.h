@@ -82,6 +82,8 @@ typedef struct
     int epollfd;
     //events数组大小
     int ncap;
+    //事件计数器
+    int event_num;
     //触发的events事件
     struct epoll_event *events;
 }lib_poll_t;
@@ -90,6 +92,8 @@ typedef struct
 {
     //定义指针类型，方便判断是否初始化申请过内存if(!poll)
     lib_poll_t *poll;
+    //循环是否结束
+    int running;
 }lib_global_t;
 //申明在其他地方定义的全局变量
 extern lib_global_t LibG;

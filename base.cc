@@ -15,21 +15,48 @@ lib_global_t LibG;
 int init_poll()
 {
     size_t size;
-    LibG.poll = (lib_poll_t *)malloc(sizeof(lib_poll_t));
-
+//    LibG.poll = (lib_poll_t *)malloc(sizeof(lib_poll_t));
+    try{
+        LibG.poll = new lib_poll_t();
+    }catch(const std::exception& e){
+        libError("%s",e.what());
+    }
     LibG.poll->epollfd = epoll_create(256);
+    if (LibG.poll->epollfd  < 0)
+    {
+        libWarn("Error has occurred: (errno %d) %s", errno, strerror(errno));
+        free(LibG.poll);
+        LibG.poll = NULL; // 新增的一行
+        return -1;
+    }
+
+
     LibG.poll->ncap = 16;
-    size = sizeof(struct epoll_event) * LibG.poll->ncap;
+    try{
+        LibG.poll->events = new epoll_event[LibG.poll->ncap]();
+    }catch(const std::bad_alloc& e){
+        libError("%s",e.what());
+    }
+//    size = sizeof(struct epoll_event) * LibG.poll->ncap;
     //申请events 内存
-    LibG.poll->events = (struct epoll_event *)malloc(size);
-    memset(LibG.poll->events,0,size);
+//    LibG.poll->events = (struct epoll_event *)malloc(size);
+    LibG.poll->event_num = 0;
+//    memset(LibG.poll->events,0,size);
 
 }
 
 int free_poll()
 {
-    free(LibG.poll->events);
-    free(LibG.poll);
+    if(close(LibG.poll->epollfd) < 0 ){
+        libWarn("error has occurred (errno %d) %s",errno,strerror(errno));
+    }
+    //free(LibG.poll->events);
+    delete[] LibG.poll->events;
+    LibG.poll->events = nullptr;
+//    free(LibG.poll);
+    delete LibG.poll;
+    LibG.poll = nullptr;
+    return 0;
 }
 
 int event_init()
@@ -37,6 +64,7 @@ int event_init()
     if(!LibG.poll){
         init_poll();
     }
+    LibG.running = 1;
     return 0;
 }
 typedef enum
@@ -50,12 +78,10 @@ extern "C" int uv__next_timeout(const uv_loop_t* loop);
 int event_wait()
 {
     uv_loop_t *loop = uv_default_loop();
-    if(!LibG.poll){
-        libError("need to call event_init first");
-//        init_poll();
-    }
+    event_init();
 
-    while (loop->stop_flag == 0)
+
+    while (LibG.running > 0)
     {
         int timeout; // 增加的代码
         int n;
@@ -80,9 +106,10 @@ int event_wait()
         loop->time = uv__hrtime(UV_CLOCK_FAST) / 1000000;
         uv__run_timers(loop);
 
-        if (uv__next_timeout(loop) < 0 && !LibG.poll)
+        if (uv__next_timeout(loop) < 0 && LibG.poll->event_num == 0)
         {
-            uv_stop(loop);
+            LibG.running = 0;
+//            uv_stop(loop);
         }
     }
 //    free_poll();
@@ -93,6 +120,7 @@ int event_wait()
 
 int event_free()
 {
+    LibG.running = 0;
     free_poll();
     return 0;
 }

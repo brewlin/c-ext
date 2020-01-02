@@ -1,6 +1,7 @@
 #include "socket_co.h"
 #include "socket.h"
 #include "coroutine.h"
+#include "log.h"
 
 
 using lib::coroutine::Socket;
@@ -61,8 +62,13 @@ bool Socket::wait_event(int event)
     ev->events = event == LIB_EVENT_READ ? EPOLLIN : EPOLLOUT;
     ev->data.u64 = touint64(sockfd, id);
     epoll_ctl(LibG.poll->epollfd,EPOLL_CTL_ADD, sockfd, ev);
-
+    (LibG.poll->event_num)++;
     co->yield();
+
+    if(epoll_ctl(LibG.poll->epollfd,EPOLL_CTL_DEL,sockfd,NULL) < 0 ){
+        libWarn("error has occurred errno %d %s",errno,strerror(errno));
+        return false;
+    }
     return true;
 }
 ssize_t Socket::recv(void *buf,size_t len)
@@ -98,11 +104,16 @@ int Socket::init_read_buffer()
 {
     if (!read_buffer)
     {
-        read_buffer = (char *)malloc(65536);
-        if (read_buffer == NULL)
-        {
-            return -1;
+        try{
+            read_buffer  = new char[65536];
+        }catch(const std::bad_alloc& e){
+            libError("%s",e.what());
         }
+//        read_buffer = (char *)malloc(65536);
+//        if (read_buffer == NULL)
+//        {
+//            return -1;
+//        }
         read_buffer_len = 65536;
     }
 
@@ -113,11 +124,17 @@ int Socket::init_write_buffer()
 {
     if (!write_buffer)
     {
-        write_buffer = (char *)malloc(65536);
-        if (write_buffer == NULL)
+        try{
+            write_buffer = new char[65536];
+        }catch(const std::bad_alloc& e)
         {
-            return -1;
+            libError("%s",e.what());
         }
+//        write_buffer = (char *)malloc(65536);
+//        if (write_buffer == NULL)
+//        {
+//            return -1;
+//        }
         write_buffer_len = 65536;
     }
 

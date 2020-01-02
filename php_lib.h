@@ -39,7 +39,8 @@ void lib_coroutine_server_coro_init();
 
 PHP_FUNCTION(lib_coroutine_create);
 
-
+PHP_FUNCTION(lib_event_init);
+PHP_FUNCTION(lib_event_wait);
 
 inline zval *lib_zend_read_property(zend_class_entry *class_ptr, zval *obj, const char *s, int len, int silent)
 {

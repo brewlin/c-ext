@@ -5,8 +5,15 @@
 #ifndef C_EXT_TIMER_H
 #define C_EXT_TIMER_H
 
-#include <uv.h>
 #include "php_lib.h"
+#include "lib.h"
+
+typedef void (*timer_func_t)(void *);
+
+
+
+
+
 
 PHP_FUNCTION(lib_timer_test);
 
