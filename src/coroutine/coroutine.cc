@@ -51,22 +51,12 @@ void Coroutine::resume()
     }
 }
 int sleep_call(long long id,void *data){
-    printf("call ");
     ((Coroutine *)data)->resume();
     return NOMORE;
 }
-//static void sleep_timeout(uv_timer_t *timer)
-//{
-//    ((Coroutine *)timer->data)->resume();
-//}
 int Coroutine::sleep(double seconds)
 {
-    printf("sleep");
     Coroutine* co = Coroutine::get_current();
-//    uv_timer_t timer;
-//    timer.data = co;
-//    uv_timer_init(uv_default_loop(),&timer);
-//    uv_timer_start(&timer,sleep_timeout,seconds*1000,0);
     create_time_event(seconds,sleep_call,co,NULL);
     co->yield();
     return 0;

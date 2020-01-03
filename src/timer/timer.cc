@@ -1,4 +1,4 @@
-#include "../../include/timer.h"
+#include "timer.h"
 
 /*
  * 取出当前时间的秒和毫秒，
@@ -214,18 +214,6 @@ int del_time(long long id)
 
     return ERROR; /* NO event with the specified ID found */
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //
