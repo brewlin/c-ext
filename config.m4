@@ -57,6 +57,7 @@ if test "$PHP_LIB" != "no"; then
         sharemem_util.cc \
         server_coro_util.cc \
         coroutine_util.cc \
+        timer_util.cc \
 
         src/log/log.cc \
         src/error/error.cc \

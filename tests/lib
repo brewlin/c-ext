@@ -1,7 +1,0 @@
-#!/usr/bin/env php
-<?php
-//lib test
-echo "execute the lib extension";
-//coroutine
-//自定义协程扩展
-Lib\Coroutine::create();

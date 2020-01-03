@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+//初始化全局对象 epoll等内存空间初始化
+lib_event_init();
+
+//协程运行
+cgo(function(){
+    $serv = new Lib\Coroutine\Server("127.0.0.1", 9999);
+    while(1){
+        $connfd = $serv->accept();
+        cgo(function()use($serv,$connfd){
+            $msg = $serv->recv($connfd);
+            var_dump($msg);
+            $serv->send($connfd,$msg);
+            $serv->close($connfd);
+
+        });
+    }
+});
+
+//epoll event 轮循 检查事件
+lib_event_wait();

@@ -10,6 +10,7 @@ PHP_MINIT_FUNCTION(lib)
 	lib_process_init();
 	lib_sharemem_util_init();
 	lib_coroutine_server_coro_init();
+	lib_timer_util_init();
    // php_printf("MINIT\n");
 	return SUCCESS;
 }
