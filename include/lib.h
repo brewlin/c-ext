@@ -42,8 +42,6 @@
 //引入epoll
 #include <sys/epoll.h>
 
-#include "timer.h"
-
 typedef unsigned int uint_t;
 typedef int int_t;
 
@@ -66,6 +64,36 @@ typedef int  err_t;
 
 #define signal_helper(n)     SIG##n
 #define signal_value(n)      signal_helper(n)
+
+
+typedef int TimeProc(long long id,void *data);
+typedef void FinalizerProc(void *data);
+//非周期性定时任务
+#define  NOMORE -1
+
+typedef struct TimeEvent {
+    //时间事件id
+    long long id;
+
+    //事件到达时间 seconds
+    long when_sec;
+    long when_ms; //milliseconds
+
+    //事件处理函数
+    TimeProc *proc;
+
+    //事件释放函数
+    FinalizerProc *fproc;
+
+    void *data;
+
+//    指向下一个时间结构，形成链表
+    struct TimeEvent *next;
+}TimeEvent;
+
+
+
+
 
 enum libevent_type
 {

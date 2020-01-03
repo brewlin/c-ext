@@ -49,7 +49,7 @@ const zend_function_entry lib_functions[] = {
 
 //	PHP_FE(lib_coroutine_create,arginfo_lib_coroutine_create)
 //	PHP_FALIAS(sgo, lib_coroutine_create, arginfo_lib_coroutine_create)
-    PHP_FE(lib_timer_test,NULL)
+//    PHP_FE(lib_timer_test,NULL)
     PHP_FALIAS(cgo,lib_coroutine_create,arginfo_lib_coroutine_create)
 	PHP_FE(lib_fork,NULL)
 	PHP_FE(lib_event_init,NULL)

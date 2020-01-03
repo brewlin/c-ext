@@ -1,4 +1,4 @@
-#include "timer.h"
+#include "../../include/timer.h"
 
 /*
  * 取出当前时间的秒和毫秒，
@@ -56,7 +56,7 @@ long long create_time_event(long long millseconds,TimeProc *proc,void *data,Fina
     long long id = LibG.timeNextId++;
 
     TimeEvent *te;
-    te = malloc(sizeof(*te));
+    te = (TimeEvent *)malloc(sizeof(*te));
     if(te == NULL)return ERROR;
 
     te->id = id;
@@ -173,7 +173,7 @@ int process_time_event()
 
             // 因为执行事件之后，事件列表可能已经被改变了
             // 因此需要将 te 放回表头，继续开始执行事件
-            te = eventLoop->timeEventHead;
+            te = LibG.timeHead;
         } else {
             te = te->next;
         }
@@ -228,21 +228,21 @@ int del_time(long long id)
 
 
 
-
-uint64_t repeat = 0;
-
-static void callback(uv_timer_t *handle)
-{
-    repeat = repeat + 1;
-    printf("repeat count:%d \n", repeat);
-}
-
-PHP_FUNCTION(lib_timer_test)
-        {
-                uv_loop_t *loop = uv_default_loop();
-                uv_timer_t timer_req;
-                uv_timer_init(loop, &timer_req);
-
-                uv_timer_start(&timer_req, callback, 1000, 1000);
-                uv_run(loop, UV_RUN_DEFAULT);
-        }
+//
+//uint64_t repeat = 0;
+//
+//static void callback(uv_timer_t *handle)
+//{
+//    repeat = repeat + 1;
+//    printf("repeat count:%d \n", repeat);
+//}
+//
+//PHP_FUNCTION(lib_timer_test)
+//        {
+//                uv_loop_t *loop = uv_default_loop();
+//                uv_timer_t timer_req;
+//                uv_timer_init(loop, &timer_req);
+//
+//                uv_timer_start(&timer_req, callback, 1000, 1000);
+//                uv_run(loop, UV_RUN_DEFAULT);
+//        }

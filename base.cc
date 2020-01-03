@@ -1,10 +1,11 @@
-#include "lib.h"
+#include "include/lib.h"
 #include "uv.h"
-#include "log.h"
-#include "coroutine.h"
+#include "include/log.h"
+#include "include/coroutine.h"
 
-#include "lib_coroutine.h"
+#include "include/lib_coroutine.h"
 #include <iostream>
+#include "timer.h"
 
 
 using lib::PHPCoroutine;
@@ -14,7 +15,7 @@ lib_global_t LibG;
 
 int init_poll()
 {
-    size_t size;
+//    size_t size;
 //    LibG.poll = (lib_poll_t *)malloc(sizeof(lib_poll_t));
     try{
         LibG.poll = new lib_poll_t();
@@ -42,6 +43,7 @@ int init_poll()
 //    LibG.poll->events = (struct epoll_event *)malloc(size);
     LibG.poll->event_num = 0;
 //    memset(LibG.poll->events,0,size);
+    return OK;
 
 }
 
@@ -67,27 +69,87 @@ int event_init()
     LibG.running = 1;
     return 0;
 }
-typedef enum
-{
-    UV_CLOCK_PRECISE = 0,  /* Use the highest resolution clock available. */
-    UV_CLOCK_FAST = 1      /* Use the fastest clock with <= 1ms granularity. */
-} uv_clocktype_t;
-extern "C" void uv__run_timers(uv_loop_t* loop);
-extern "C" uint64_t uv__hrtime(uv_clocktype_t type);
-extern "C" int uv__next_timeout(const uv_loop_t* loop);
+//typedef enum
+//{
+//    UV_CLOCK_PRECISE = 0,  /* Use the highest resolution clock available. */
+//    UV_CLOCK_FAST = 1      /* Use the fastest clock with <= 1ms granularity. */
+//} uv_clocktype_t;
+//extern "C" void uv__run_timers(uv_loop_t* loop);
+//extern "C" uint64_t uv__hrtime(uv_clocktype_t type);
+//extern "C" int uv__next_timeout(const uv_loop_t* loop);
+//int event_wait()
+//{
+//    uv_loop_t *loop = uv_default_loop();
+//    event_init();
+//
+//
+//    while (LibG.running > 0)
+//    {
+//        int timeout; // 增加的代码
+//        int n;
+//        epoll_event *events;
+//
+//        timeout = uv__next_timeout(loop); // 增加的代码
+//        events = LibG.poll->events;
+//        n = epoll_wait(LibG.poll->epollfd,LibG.poll->events,LibG.poll->ncap,timeout);
+//        for (int i = 0; i < n; i++) {
+//            int fd;
+//            int id;
+//            struct epoll_event *p = &events[i];
+//            uint64_t u64 = p->data.u64;
+//            Coroutine *co;
+//
+//            fromuint64(u64, &fd, &id);
+//            co = Coroutine::get_by_cid(id);
+//            co->resume();
+//        }
+//        // usleep(timeout); // 增加的代码
+//
+//        loop->time = uv__hrtime(UV_CLOCK_FAST) / 1000000;
+//        uv__run_timers(loop);
+//
+//        if (uv__next_timeout(loop) < 0 && LibG.poll->event_num == 0)
+//        {
+//            LibG.running = 0;
+////            uv_stop(loop);
+//        }
+//    }
+////    free_poll();
+//    event_free();
+//    return 0;
+//}
 int event_wait()
 {
-    uv_loop_t *loop = uv_default_loop();
     event_init();
-
 
     while (LibG.running > 0)
     {
-        int timeout; // 增加的代码
+        //最近的时间事件
+        TimeEvent *shortTime = NULL;
+        struct timeval tv,*tvp;
         int n;
         epoll_event *events;
 
-        timeout = uv__next_timeout(loop); // 增加的代码
+        //获取最近的时间事件
+        shortTime = search_nearest_time();
+
+        if(shortTime){
+            long now_sec,now_ms;
+            get_time(&now_sec,&now_ms);
+            tvp = &tv;
+            tvp->tv_sec = shortTime->when_sec - now_sec;
+            if (shortTime->when_ms < now_ms) {
+                tvp->tv_usec = ((shortTime->when_ms+1000) - now_ms)*1000;
+                tvp->tv_sec --;
+            } else {
+                tvp->tv_usec = (shortTime->when_ms - now_ms)*1000;
+            }
+            // 时间差小于 0 ，说明事件已经可以执行了，将秒和毫秒设为 0 （不阻塞）
+            if (tvp->tv_sec < 0) tvp->tv_sec = 0;
+            if (tvp->tv_usec < 0) tvp->tv_usec = 0;
+        }
+
+        int timeout = tvp ? (tvp->tv_sec*1000 + tvp->tv_usec/1000) : -1;
         events = LibG.poll->events;
         n = epoll_wait(LibG.poll->epollfd,LibG.poll->events,LibG.poll->ncap,timeout);
         for (int i = 0; i < n; i++) {
@@ -101,12 +163,10 @@ int event_wait()
             co = Coroutine::get_by_cid(id);
             co->resume();
         }
-        // usleep(timeout); // 增加的代码
+        //处理定时任务触发事件
+        process_time_event();
 
-        loop->time = uv__hrtime(UV_CLOCK_FAST) / 1000000;
-        uv__run_timers(loop);
-
-        if (uv__next_timeout(loop) < 0 && LibG.poll->event_num == 0)
+        if (!LibG.timeHead && LibG.poll->event_num == 0)
         {
             LibG.running = 0;
 //            uv_stop(loop);
