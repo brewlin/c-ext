@@ -42,6 +42,7 @@
 //引入epoll
 #include <sys/epoll.h>
 
+#include "timer.h"
 
 typedef unsigned int uint_t;
 typedef int int_t;
@@ -94,6 +95,13 @@ typedef struct
     lib_poll_t *poll;
     //循环是否结束
     int running;
+
+    //时间事件id
+    long long timeNextId;
+    //最后一次执行时间
+    time_t lastTime;
+    //时间事件链表
+    TimeEvent *timeHead;
 }lib_global_t;
 //申明在其他地方定义的全局变量
 extern lib_global_t LibG;
