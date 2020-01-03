@@ -68,32 +68,11 @@ int event_wait()
 
     while (LibG.running > 0)
     {
-        //最近的时间事件
-        TimeEvent *shortTime = NULL;
-        struct timeval tv,*tvp;
         int n;
         epoll_event *events;
 
         //获取最近的时间事件
-        shortTime = search_nearest_time();
-
-        if(shortTime){
-            long now_sec,now_ms;
-            get_time(&now_sec,&now_ms);
-            tvp = &tv;
-            tvp->tv_sec = shortTime->when_sec - now_sec;
-            if (shortTime->when_ms < now_ms) {
-                tvp->tv_usec = ((shortTime->when_ms+1000) - now_ms)*1000;
-                tvp->tv_sec --;
-            } else {
-                tvp->tv_usec = (shortTime->when_ms - now_ms)*1000;
-            }
-            // 时间差小于 0 ，说明事件已经可以执行了，将秒和毫秒设为 0 （不阻塞）
-            if (tvp->tv_sec < 0) tvp->tv_sec = 0;
-            if (tvp->tv_usec < 0) tvp->tv_usec = 0;
-        }
-
-        int timeout = tvp ? (tvp->tv_sec*1000 + tvp->tv_usec/1000) : -1;
+        int timeout = search_nearest_time();
         events = LibG.poll->events;
         n = epoll_wait(LibG.poll->epollfd,LibG.poll->events,LibG.poll->ncap,timeout);
         for (int i = 0; i < n; i++) {

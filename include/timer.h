@@ -30,7 +30,7 @@ int process_time_event();
  * 搜寻最近的时间事件
  * @return
  */
-TimeEvent *search_nearest_time();
+int search_nearest_time();
 /*
  * 删除给定 id 的时间事件
  */

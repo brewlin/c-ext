@@ -91,9 +91,12 @@ int time_expire(long long id, void *clientData)
  * 获取最近一次时间
  * @return
  */
-TimeEvent *search_nearest_time()
+int search_nearest_time()
 {
+    struct timeval tv,*tvp;
+    tvp = &tv;
     TimeEvent *te = LibG.timeHead;
+    //最近的时间事件
     TimeEvent *nearest = NULL;
 
     while(te) {
@@ -102,7 +105,22 @@ TimeEvent *search_nearest_time()
 
         te = te->next;
     }
-    return nearest;
+
+    if(nearest){
+        long now_sec,now_ms;
+        get_time(&now_sec,&now_ms);
+        tvp->tv_sec = nearest->when_sec - now_sec;
+        if (nearest->when_ms < now_ms) {
+            tvp->tv_usec = ((nearest->when_ms+1000) - now_ms)*1000;
+            tvp->tv_sec --;
+        } else {
+            tvp->tv_usec = (nearest->when_ms - now_ms)*1000;
+        }
+        // 时间差小于 0 ，说明事件已经可以执行了，将秒和毫秒设为 0 （不阻塞）
+        if (tvp->tv_sec < 0) tvp->tv_sec = 0;
+        if (tvp->tv_usec < 0) tvp->tv_usec = 0;
+    }
+    return tvp ? (tvp->tv_sec*1000 + tvp->tv_usec/1000) : -1;
 }
 
 /**
@@ -156,7 +174,7 @@ int process_time_event()
             retval = te->proc( id, te->data);
             processed++;
             /**
-                如果事件处理器返回AE_NOMORE，那么这个事件为定时事件：该事件在达到一次之后就会被删除，之后不再到达。
+                如果事件处理器返回NOMORE，那么这个事件为定时事件：该事件在达到一次之后就会被删除，之后不再到达。
                 如果事件处理器返回一个非AE NOMORE的整数值，那么这个事件为周期性时间：当一个时间事件到达之后，服务器会根据事件处理器返回的值，
                 对时间事件的when属性进行更新，让这个事件在一段时间之后再次到达，并以这种方式一直更新并运行下去。
                 比如说，如果一个时间事件的赴理器返回整数值30，那么服务器应该对这个时间事件进行更新，让这个事件在30毫秒之后再次到达。
