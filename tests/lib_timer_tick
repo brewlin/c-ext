@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+lib_event_init();
+
+//定时器 毫秒单位
+Lib\Timer::tick(1000,function(){
+    "定时器循环"
+});
+
+lib_event_wait();
