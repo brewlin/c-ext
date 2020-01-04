@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+$process = new Lib\Process(function(Lib\Process $process){
+    while(true){
+        $data = $process->read();
+        echo "child process :> get parent msg: $data \n\n";
+    }
+});
+
+$process->start();
+for($i = 0;$i < 10 ; $i ++ ){
+    echo "parent process :> send child msg: $i\n";
+    $process->write($i);
+    sleep(1);
+}

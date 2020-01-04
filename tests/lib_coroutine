@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+//初始化全局对象 epoll等内存空间初始化
+lib_event_init();
+
+//协程运行
+cgo(function(){
+    echo "go"
+});
+
+//epoll event 轮循 检查事件
+lib_event_wait();
