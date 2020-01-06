@@ -59,7 +59,7 @@ if test "$PHP_LIB" != "no"; then
         server_coro_util.cc \
         coroutine_util.cc \
         timer_util.cc \
-        channel_util.cc \
+        channel_util_v2.cc \
 
         src/log/log.cc \
         src/error/error.cc \
