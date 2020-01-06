@@ -36,6 +36,7 @@ void lib_sharemem_util_init();
 void lib_process_init();
 void lib_coroutine_server_coro_init();
 void lib_timer_util_init();
+void lib_channel_init();
 
 
 PHP_FUNCTION(lib_coroutine_create);

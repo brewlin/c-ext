@@ -71,7 +71,7 @@ namespace lib
             if(ctx.is_end())
             {
                 cid = current->get_cid();
-                printf("in run method: co[%ld] end\n", cid);
+//                printf("in run method: co[%ld] end\n", cid);
                 current = origin;
                 coroutines.erase(cid);
                 delete this;

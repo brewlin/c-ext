@@ -59,6 +59,7 @@ if test "$PHP_LIB" != "no"; then
         server_coro_util.cc \
         coroutine_util.cc \
         timer_util.cc \
+        channel_util.cc \
 
         src/log/log.cc \
         src/error/error.cc \
@@ -71,6 +72,7 @@ if test "$PHP_LIB" != "no"; then
         src/channel/channel.cc \
         src/memory/ShareMem.cc \
 
+        src/coroutine/channel.cc \
         src/coroutine/coroutine.cc \
         src/coroutine/lib_coroutine.cc \
         src/coroutine/context.cc \
