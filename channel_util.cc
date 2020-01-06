@@ -60,9 +60,15 @@ static PHP_METHOD(lib_coro_channel, push)
     zchan = lib_zend_read_property(lib_coro_channel_ce_ptr, getThis(), ZEND_STRL("zchan"), 0);
     //将zval指针 转换为 channel 对象
     chan = (Channel *)Z_PTR_P(zchan);
+    //防止字符串被销毁了，增加引用计数
+    Z_TRY_ADDREF_P(zdata);
+    zdata = lib_zval_dup(zdata);
 
     if (!chan->push(zdata, timeout))
     {
+        //删除引用，回收字符串
+        Z_TRY_DELREF_P(zdata);
+        efree(zdata);
         RETURN_FALSE;
     }
 
@@ -89,6 +95,8 @@ static PHP_METHOD(lib_coro_channel, pop)
     }
     //返回用户push 的数据
     RETVAL_ZVAL(zdata, 0, 0);
+    //释放拷贝出来的内存
+    efree(zdata);
 }
 
 static const zend_function_entry lib_coro_channel_methods[] =

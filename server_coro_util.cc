@@ -159,11 +159,14 @@ static const zend_function_entry lib_server_coro_methods[] =
 
 void lib_coroutine_server_coro_init()
 {
+    zval zsock;
     INIT_NS_CLASS_ENTRY(lib_coroutine_server_coro_ce, "Lib", "Coroutine\\Server", lib_server_coro_methods);
     lib_coroutine_server_coro_ce_ptr = zend_register_internal_class(&lib_coroutine_server_coro_ce TSRMLS_CC);
     // Registered in the Zend Engine
-    zval *zsock = (zval *)malloc(sizeof(zval));
-    zend_declare_property(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("zsock"), zsock, ZEND_ACC_PUBLIC);    zend_declare_property_string(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("host"), "", ZEND_ACC_PUBLIC);
+//    zval *zsock = (zval *)malloc(sizeof(zval));
+
+    zend_declare_property(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("zsock"), &zsock, ZEND_ACC_PUBLIC);
+    zend_declare_property_string(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("host"), "", ZEND_ACC_PUBLIC);
     zend_declare_property_long(lib_coroutine_server_coro_ce_ptr, ZEND_STRL("port"), -1, ZEND_ACC_PUBLIC);
 
 
