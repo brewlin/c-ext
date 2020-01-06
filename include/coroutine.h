@@ -36,6 +36,7 @@ namespace lib
 
         static void set_on_yield(lib_coro_on_swap_t func);
         static void set_on_resume(lib_coro_on_swap_t func);
+        static void set_on_close(lib_coro_on_swap_t func);
 
         inline Coroutine* get_origin()
         {
@@ -44,6 +45,7 @@ namespace lib
 
     
     protected:
+        static lib_coro_on_swap_t on_close;
         static lib_coro_on_swap_t on_yield;
         static lib_coro_on_swap_t on_resume;
 
@@ -70,6 +72,7 @@ namespace lib
             ctx.swap_in();
             if(ctx.is_end())
             {
+                on_close(task);
                 cid = current->get_cid();
 //                printf("in run method: co[%ld] end\n", cid);
                 current = origin;

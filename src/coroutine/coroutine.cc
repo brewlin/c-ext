@@ -10,6 +10,7 @@ long Coroutine::last_cid = 0;
 
 lib_coro_on_swap_t Coroutine::on_yield = nullptr;
 lib_coro_on_swap_t Coroutine::on_resume = nullptr;
+lib_coro_on_swap_t Coroutine::on_close = nullptr;
 
 void Coroutine::set_on_yield(lib_coro_on_swap_t func)
 {
@@ -19,6 +20,10 @@ void Coroutine::set_on_yield(lib_coro_on_swap_t func)
 void Coroutine::set_on_resume(lib_coro_on_swap_t func)
 {
     on_resume = func;
+}
+void Coroutine::set_on_close(lib_coro_on_swap_t func)
+{
+    on_close = func;
 }
 
 void * Coroutine::get_current_task()
@@ -55,6 +60,7 @@ void Coroutine::resume()
     ctx.swap_in();
     if (ctx.is_end())
     {
+        on_close(task);
         cid = current->get_cid();
 //        printf("in resume method: co[%ld] end\n", cid);
         current = origin;
