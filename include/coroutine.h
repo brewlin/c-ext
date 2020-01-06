@@ -5,6 +5,9 @@
 #include <unordered_map>
 
 #define DEFAULT_C_STACK_SIZE          (2 *1024 * 1024)
+
+typedef void (*lib_coro_on_swap_t)(void*);
+
 namespace lib
 {
     class Coroutine
@@ -31,8 +34,19 @@ namespace lib
             return i != coroutines.end() ? i->second: nullptr;
         }
 
+        static void set_on_yield(lib_coro_on_swap_t func);
+        static void set_on_resume(lib_coro_on_swap_t func);
+
+        inline Coroutine* get_origin()
+        {
+            return origin;
+        }
+
     
     protected:
+        static lib_coro_on_swap_t on_yield;
+        static lib_coro_on_swap_t on_resume;
+
         static Coroutine* current;
         Coroutine *origin;
         void *task = nullptr;

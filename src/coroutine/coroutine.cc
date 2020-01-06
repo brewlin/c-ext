@@ -8,6 +8,18 @@ Coroutine* Coroutine::current  = nullptr;
 std::unordered_map<long, Coroutine*> Coroutine::coroutines;
 long Coroutine::last_cid = 0;
 
+lib_coro_on_swap_t Coroutine::on_yield = nullptr;
+lib_coro_on_swap_t Coroutine::on_resume = nullptr;
+
+void Coroutine::set_on_yield(lib_coro_on_swap_t func)
+{
+    on_yield = func;
+}
+
+void Coroutine::set_on_resume(lib_coro_on_swap_t func)
+{
+    on_resume = func;
+}
 
 void * Coroutine::get_current_task()
 {

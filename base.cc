@@ -1,5 +1,4 @@
 #include "include/lib.h"
-#include "uv.h"
 #include "include/log.h"
 #include "include/coroutine.h"
 

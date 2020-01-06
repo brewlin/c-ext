@@ -148,3 +148,44 @@ int PHPCoroutine::sleep(double seconds)
     return 0;
 }
 
+void PHPCoroutine::on_yield(void *arg)
+{
+    php_coro_task *task = (php_coro_task *) arg;
+    php_coro_task *origin_task = get_origin_task(task);
+    save_task(task);
+    restore_task(origin_task);
+}
+
+void PHPCoroutine::on_resume(void *arg)
+{
+    php_coro_task *task = (php_coro_task *) arg;
+    php_coro_task *current_task = get_task();
+    save_task(current_task);
+    restore_task(task);
+}
+
+/**
+ * load PHP stack
+ */
+void PHPCoroutine::restore_task(php_coro_task *task)
+{
+    restore_vm_stack(task);
+}
+
+/**
+ * load PHP stack
+ */
+inline void PHPCoroutine::restore_vm_stack(php_coro_task *task)
+{
+    EG(vm_stack_top) = task->vm_stack_top;
+    EG(vm_stack_end) = task->vm_stack_end;
+    EG(vm_stack) = task->vm_stack;
+    EG(vm_stack_page_size) = task->vm_stack_page_size;
+    EG(current_execute_data) = task->execute_data;
+}
+
+void PHPCoroutine::init()
+{
+    Coroutine::set_on_yield(on_yield);
+    Coroutine::set_on_resume(on_resume);
+}

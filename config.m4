@@ -6,8 +6,9 @@ Make sure that the comment is aligned:
 
 if test "$PHP_LIB" != "no"; then
 
-    PHP_ADD_LIBRARY_WITH_PATH(uv, /usr/local/lib/, LIB_SHARED_LIBADD)
-    PHP_SUBST(LIB_SHARED_LIBADD)
+   # 添加uv 扩展库定时任务
+   # PHP_ADD_LIBRARY_WITH_PATH(uv, /usr/local/lib/, LIB_SHARED_LIBADD)
+   # PHP_SUBST(LIB_SHARED_LIBADD)
 
     PHP_ADD_LIBRARY(pthread)
     LIB_ASM_DIR="thirdparty/boost/asm/"

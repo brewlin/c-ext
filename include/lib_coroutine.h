@@ -50,6 +50,13 @@ namespace lib
         static int sleep(double seconds);
         static int scheduler();
 
+        static void init();
+        static inline php_coro_task* get_origin_task(php_coro_task *task)
+        {
+            Coroutine *co = task->co->get_origin();
+            return co?(php_coro_task *)co->get_task():&main_task;
+        }
+
     protected:
         //主协程成员
         static php_coro_task main_task;
@@ -62,6 +69,11 @@ namespace lib
         static void create_func(void *arg);
         //初始化一个php栈
         static void vm_stack_init(void);
+
+        static void on_yield(void *arg);
+        static void on_resume(void *arg);
+        static inline void restore_task(php_coro_task *task);
+        static inline void restore_vm_stack(php_coro_task *task);
     };
 }
 //????????php?????
