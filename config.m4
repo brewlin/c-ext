@@ -75,6 +75,9 @@ if test "$PHP_LIB" != "no"; then
         src/channel/channel.cc \
         src/memory/ShareMem.cc \
 
+        src/hook/sleep.cc \
+        src/hook/socket_stream.cc \
+
         src/coroutine/channel.cc \
         src/coroutine/coroutine.cc \
         src/coroutine/lib_coroutine.cc \
