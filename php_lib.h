@@ -39,7 +39,7 @@ void lib_co_server_init(int module_number);
 void lib_timer_util_init();
 void lib_channel_init();
 void lib_co_socket_init(int module_number);
-
+void lib_runtime_init();
 
 PHP_FUNCTION(lib_coroutine_create);
 
