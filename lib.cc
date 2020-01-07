@@ -9,10 +9,12 @@ PHP_MINIT_FUNCTION(lib)
 	//注册类
 	lib_process_init();//register process model
 	lib_sharemem_util_init();//register sharmem model
-	lib_coroutine_server_coro_init();//register coroutine server model
+//	lib_coroutine_server_coro_init();//register coroutine server model
 	lib_timer_util_init();//register timer model
 	lib_channel_init();//register channel model
-   // php_printf("MINIT\n");
+	lib_co_socket_init(module_number);//register socket co model
+	lib_co_server_init(module_number);
+
 	return SUCCESS;
 }
 

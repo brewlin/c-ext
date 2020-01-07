@@ -28,12 +28,12 @@ int Socket::bind(int type, char *host, int port)
     return libsocket_bind(sockfd, type, host, port);
 }
 
-int Socket::listen()
+int Socket::listen(int backlog)
 {
-    return libsocket_listen(sockfd);
+    return libsocket_listen(sockfd,backlog);
 }
 
-int Socket::accept()
+Socket* Socket::accept()
 {
     int connfd;
 
@@ -42,7 +42,7 @@ int Socket::accept()
         printf("%d",connfd);
     } while (connfd < 0 && errno == EAGAIN && wait_event(LIB_EVENT_READ));
 
-    return connfd;
+    return (new Socket(connfd));
 }
 
 bool Socket::wait_event(int event)

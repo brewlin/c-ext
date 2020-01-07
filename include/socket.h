@@ -19,7 +19,7 @@ int libsocket_create(int domain,int type,int protocol);
 
 int libsocket_bind(int sock,int type,char *host,int port);
 
-int libsocket_listen(int sock);
+int libsocket_listen(int sock,int backlog);
 
 int libsocket_accept(int sock);
 

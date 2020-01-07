@@ -34,9 +34,11 @@ ZEND_END_MODULE_GLOBALS(lib)
 void lib_coroutine_util_init();
 void lib_sharemem_util_init();
 void lib_process_init();
-void lib_coroutine_server_coro_init();
+//void lib_coroutine_server_coro_init();
+void lib_co_server_init(int module_number);
 void lib_timer_util_init();
 void lib_channel_init();
+void lib_co_socket_init(int module_number);
 
 
 PHP_FUNCTION(lib_coroutine_create);
@@ -75,7 +77,7 @@ inline zval* lib_zval_dup(zval *val)
 /**
  * module##_handlers.offset 保存PHP对象在自定义对象中的偏移量
  */
-#define ST_SET_CLASS_CUSTOM_OBJECT(module, _create_object, _free_obj, _struct, _std) \
+#define SET_CLASS_CUSTOM_OBJECT(module, _create_object, _free_obj, _struct, _std) \
     ST_SET_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
     module##_handlers.offset = XtOffsetOf(_struct, _std)
 

@@ -56,15 +56,17 @@ if test "$PHP_LIB" != "no"; then
         base.cc \
         process_util.cc \
         sharemem_util.cc \
-        server_coro_util.cc \
+        coroutine_server_util_v2.cc \
         coroutine_util.cc \
         timer_util.cc \
         channel_util_v2.cc \
+        coroutine_socket_util.cc \
 
         src/log/log.cc \
         src/error/error.cc \
         src/socket/socket.cc \
         src/socket/socket_co.cc \
+        src/server/coroutine_server.cc \
 
         src/fork/fork.cc \
         src/timer/timer.cc \

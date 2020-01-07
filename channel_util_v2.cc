@@ -156,7 +156,7 @@ void lib_channel_init() {
     lib_co_channel_ce_ptr = zend_register_internal_class(&lib_co_channel_ce    TSRMLS_CC); // Registered in the Zend Engine
 
     memcpy(&lib_co_channel_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    ST_SET_CLASS_CUSTOM_OBJECT(lib_co_channel, lib_co_channel_create_object, lib_co_channel_free_object, co_chan,
+    SET_CLASS_CUSTOM_OBJECT(lib_co_channel, lib_co_channel_create_object, lib_co_channel_free_object, co_chan,
                                std);
     zend_declare_property_long(lib_co_channel_ce_ptr, ZEND_STRL("capacity"), 1, ZEND_ACC_PUBLIC);
 }
