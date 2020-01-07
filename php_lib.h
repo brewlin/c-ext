@@ -4,6 +4,8 @@
 #include "php.h"
 #include "php_ini.h"
 #include "ext/standard/info.h"
+#include "php_network.h"
+#include "php_streams.h"
 
 #include "lib.h"
 
