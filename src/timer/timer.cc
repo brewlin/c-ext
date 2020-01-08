@@ -119,6 +119,9 @@ int search_nearest_time()
         // 时间差小于 0 ，说明事件已经可以执行了，将秒和毫秒设为 0 （不阻塞）
         if (tvp->tv_sec < 0) tvp->tv_sec = 0;
         if (tvp->tv_usec < 0) tvp->tv_usec = 0;
+    } else{
+        //没有事件的时候 默认阻塞1s 中
+        return 1000;
     }
     return tvp ? (tvp->tv_sec*1000 + tvp->tv_usec/1000) : -1;
 }

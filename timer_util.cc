@@ -16,6 +16,11 @@ ZEND_ARG_INFO(0, seconds)
 ZEND_ARG_CALLABLE_INFO(0, func, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_timer_del, 0, 0, 1)
+ZEND_ARG_INFO(0, timerid)
+ZEND_END_ARG_INFO()
+
+
 int tick(long long id,void *data){
 
     php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
@@ -38,15 +43,48 @@ PHP_METHOD(timer_obj,tick)
     long id = create_time_event(fci->seconds,tick,fci,NULL);
     RETURN_LONG(id);
 }
+int after(long long id,void *data){
+
+    php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
+    zval result;
+    fci->fci.retval = &result;
+    if(zend_call_function(&fci->fci,&fci->fcc) != SUCCESS){
+        return NOMORE;
+    }
+    return NOMORE;
+}
 
 PHP_METHOD(timer_obj,after)
 {
-}
+    php_lib_timer_callback *fci = (php_lib_timer_callback *)malloc(sizeof(php_lib_timer_callback));
+    //强制传入两个参数
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_LONG(fci->seconds)
+    Z_PARAM_FUNC(fci->fci,fci->fcc)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
+    long id = create_time_event(fci->seconds,after,fci,NULL);
+    RETURN_LONG(id)
+}
+PHP_METHOD(timer_obj,del)
+{
+    long timer_id;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timer_id) == FAILURE)
+    {
+        return;
+    }
+    int ret = del_time(timer_id);
+    if(ret == OK){
+        RETURN_TRUE;
+    }
+    RETURN_FALSE;
+
+}
 const zend_function_entry lib_timer_util_methods[] =
         {
                 PHP_ME(timer_obj,tick,arginfo_lib_timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
                 PHP_ME(timer_obj,after,arginfo_lib_timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+                PHP_ME(timer_obj,del,arginfo_lib_timer_del,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
                 PHP_FE_END
         };
 
