@@ -7,6 +7,15 @@
 #include "php_network.h"
 #include "php_streams.h"
 
+#include "php_globals.h"
+#include "php_main.h"
+
+
+#include "zend_variables.h"
+#include "zend_interfaces.h"
+#include "zend_closures.h"
+#include "zend_exceptions.h"
+
 #include "lib.h"
 
 #define PHP_LIB_VERSION "0.1.0"

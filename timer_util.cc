@@ -19,7 +19,17 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_timer_del, 0, 0, 1)
 ZEND_ARG_INFO(0, timerid)
 ZEND_END_ARG_INFO()
-
+static void zend_fci_cache_persist(zend_fcall_info_cache *fci_cache)
+{
+    if (fci_cache->object)
+    {
+        GC_ADDREF(fci_cache->object);
+    }
+    if (fci_cache->function_handler->op_array.fn_flags & ZEND_ACC_CLOSURE)
+    {
+        GC_ADDREF(ZEND_CLOSURE_OBJECT(fci_cache->function_handler));
+    }
+}
 
 int tick(long long id,void *data){
 
@@ -41,6 +51,7 @@ PHP_METHOD(timer_obj,tick)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     long id = create_time_event(fci->seconds,tick,fci,NULL);
+    zend_fci_cache_persist(&fci->fcc);
     RETURN_LONG(id);
 }
 int after(long long id,void *data){
@@ -54,6 +65,7 @@ int after(long long id,void *data){
     return NOMORE;
 }
 
+
 PHP_METHOD(timer_obj,after)
 {
     php_lib_timer_callback *fci = (php_lib_timer_callback *)malloc(sizeof(php_lib_timer_callback));
@@ -64,6 +76,7 @@ PHP_METHOD(timer_obj,after)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     long id = create_time_event(fci->seconds,after,fci,NULL);
+    zend_fci_cache_persist(&fci->fcc);
     RETURN_LONG(id)
 }
 PHP_METHOD(timer_obj,del)
