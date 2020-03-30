@@ -62,6 +62,7 @@ if test "$PHP_LIB" != "no"; then
         channel_util_v2.cc \
         coroutine_socket_util.cc \
         runtime_util.cc \
+        thread_pool_util.cc \
 
         src/log/log.cc \
         src/error/error.cc \

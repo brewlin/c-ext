@@ -15,6 +15,7 @@ PHP_MINIT_FUNCTION(lib)
 	lib_co_socket_init(module_number);//register socket co model
 	lib_co_server_init(module_number);
 	lib_runtime_init();
+	lib_thread_pool_init(module_number);
 
 	return SUCCESS;
 }
