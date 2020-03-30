@@ -252,7 +252,7 @@ void lib_co_socket_init(int module_number)
     INIT_NS_CLASS_ENTRY(co_socket_ce, "Lib", "Coroutine\\Socket", co_socket_methods);
     memcpy(&co_socket_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     co_socket_ce_ptr = zend_register_internal_class(&co_socket_ce TSRMLS_CC); // Registered in the Zend Engine
-    SET_CLASS_CUSTOM_OBJECT(co_socket, co_socket_create_object, co_socket_free_object, co_socket, std);
+    REGISTER_CUSTOM_OBJECT(co_socket, co_socket_create_object, co_socket_free_object,std);
 
     zend_declare_property_long(co_socket_ce_ptr, ZEND_STRL("fd"), -1, ZEND_ACC_PUBLIC);
     zend_declare_property_long(co_socket_ce_ptr, ZEND_STRL("errCode"), 0, ZEND_ACC_PUBLIC);

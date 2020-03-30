@@ -20,7 +20,7 @@ zend_class_entry lib_process_ce;
 zend_class_entry *lib_process_ce_ptr;
 
 
-//struct php_lib_fci_fcc
+//struct CallBackParam
 //{
 //    zend_fcall_info fci;
 //    zend_fcall_info_cache fcc;

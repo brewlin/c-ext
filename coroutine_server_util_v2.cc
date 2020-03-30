@@ -36,7 +36,7 @@ static void lib_co_server_free_object(zend_object *object)
     co_serv *serv_t = (co_serv *) lib_co_server_fetch_object(object);
     if (serv_t->serv)
     {
-        php_lib_fci_fcc *handler = serv_t->serv->get_handler();
+        CallBackParam *handler = serv_t->serv->get_handler();
         if (handler)
         {
             efree(handler);
@@ -107,9 +107,9 @@ PHP_METHOD(server_obj, shutdown)
 PHP_METHOD(server_obj, set_handler)
 {
     co_serv *server_t;
-    php_lib_fci_fcc *handle_fci_fcc;
+    CallBackParam *handle_fci_fcc;
 
-    handle_fci_fcc = (php_lib_fci_fcc *)emalloc(sizeof(php_lib_fci_fcc));
+    handle_fci_fcc = (CallBackParam *)emalloc(sizeof(CallBackParam));
 
     ZEND_PARSE_PARAMETERS_START(1, 1)
     Z_PARAM_FUNC(handle_fci_fcc->fci, handle_fci_fcc->fcc)

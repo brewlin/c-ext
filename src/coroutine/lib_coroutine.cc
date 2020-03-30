@@ -87,10 +87,10 @@ void PHPCoroutine::create_func(void *arg)
         zend_execute_ex(EG(current_execute_data));
     }
     task = get_task();
-    std::stack<php_lib_fci_fcc *> *defer_tasks = task->defer_tasks;
+    std::stack<CallBackParam *> *defer_tasks = task->defer_tasks;
 
     if (defer_tasks) {
-        php_lib_fci_fcc *defer_fci_fcc;
+        CallBackParam *defer_fci_fcc;
         zval result;
         while(!defer_tasks->empty())
         {
@@ -133,12 +133,12 @@ void PHPCoroutine::vm_stack_init(void)
      EG(vm_stack_page_size) = size;
 }
 
-void PHPCoroutine::defer(php_lib_fci_fcc *defer_fci_fcc)
+void PHPCoroutine::defer(CallBackParam *defer_fci_fcc)
 {
     php_coro_task *task = (php_coro_task *)get_task();
     if(task->defer_tasks == nullptr)
     {
-        task->defer_tasks = new std::stack<php_lib_fci_fcc *>;
+        task->defer_tasks = new std::stack<CallBackParam *>;
     }
     task->defer_tasks->push(defer_fci_fcc);
 }

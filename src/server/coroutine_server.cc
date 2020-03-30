@@ -48,11 +48,11 @@ bool Server::shutdown()
     running = false;
     return true;
 }
-void Server::set_handler(php_lib_fci_fcc *_handler)
+void Server::set_handler(CallBackParam *_handler)
 {
     handler = _handler;
 }
-php_lib_fci_fcc* Server::get_handler()
+CallBackParam* Server::get_handler()
 {
     return handler;
 }

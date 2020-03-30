@@ -1,5 +1,6 @@
 #include "php_lib.h"
 #include "timer.h"
+#include "zend_callback.h"
 
 
 struct php_lib_timer_callback
@@ -20,29 +21,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_timer_del, 0, 0, 1)
 ZEND_ARG_INFO(0, timerid)
 ZEND_END_ARG_INFO()
 
-//回调函数用户空间内存释放
-static void zend_fci_cache_discard(zend_fcall_info_cache *fci_cache)
-{
-    if (fci_cache->object) {
-        OBJ_RELEASE(fci_cache->object);
-    }
-    if (fci_cache->function_handler->op_array.fn_flags & ZEND_ACC_CLOSURE) {
-        OBJ_RELEASE(ZEND_CLOSURE_OBJECT(fci_cache->function_handler));
-
-    }
-}
-static void zend_fci_params_discard(zend_fcall_info *fci)
-{
-    if (fci->param_count > 0)
-    {
-        uint32_t i;
-        for (i = 0; i < fci->param_count; i++)
-        {
-            zval_ptr_dtor(&fci->params[i]);
-        }
-        efree(fci->params);
-    }
-}
 static void del(void *data)
 {
     php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
@@ -50,17 +28,7 @@ static void del(void *data)
     zend_fci_params_discard(&fci->fci);
     free(fci);
 }
-static void zend_fci_cache_persist(zend_fcall_info_cache *fci_cache)
-{
-    if (fci_cache->object)
-    {
-        GC_ADDREF(fci_cache->object);
-    }
-    if (fci_cache->function_handler->op_array.fn_flags & ZEND_ACC_CLOSURE)
-    {
-        GC_ADDREF(ZEND_CLOSURE_OBJECT(fci_cache->function_handler));
-    }
-}
+
 
 int tick(long long id,void *data){
 

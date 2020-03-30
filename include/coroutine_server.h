@@ -20,7 +20,7 @@ namespace lib { namespace phpcoroutine {
         {
         private:
             lib::coroutine::Socket *socket = nullptr;
-            php_lib_fci_fcc *handler = nullptr;
+            CallBackParam *handler = nullptr;
             bool running = false;
 
         public:
@@ -28,8 +28,8 @@ namespace lib { namespace phpcoroutine {
             ~Server();
             bool start();
             bool shutdown();
-            void set_handler(php_lib_fci_fcc *_handler);
-            php_lib_fci_fcc* get_handler();
+            void set_handler(CallBackParam *_handler);
+            CallBackParam* get_handler();
         };
     }
 }

@@ -51,6 +51,7 @@ void lib_timer_util_init();
 void lib_channel_init();
 void lib_co_socket_init(int module_number);
 void lib_runtime_init();
+void lib_thread_pool_init(int module_number);
 
 PHP_FUNCTION(lib_coroutine_create);
 
@@ -75,21 +76,38 @@ inline zval* lib_zval_dup(zval *val)
     return dup;
 }
 
-#define ST_SET_CLASS_CREATE(module, _create_object) \
+#define REGISTER_CLASS_CREATE(module, _create_object) \
     module##_ce_ptr->create_object = _create_object
 
-#define ST_SET_CLASS_FREE(module, _free_obj) \
+#define REGISTER_CLASS_FREE(module, _free_obj) \
     module##_handlers.free_obj = _free_obj
 
-#define ST_SET_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj) \
-    ST_SET_CLASS_CREATE(module, _create_object); \
-    ST_SET_CLASS_FREE(module, _free_obj)
+#define REGISTER_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj) \
+    REGISTER_CLASS_CREATE(module, _create_object); \
+    REGISTER_CLASS_FREE(module, _free_obj)
 
 /**
  * module##_handlers.offset 保存PHP对象在自定义对象中的偏移量
  */
-#define SET_CLASS_CUSTOM_OBJECT(module, _create_object, _free_obj, _struct, _std) \
-    ST_SET_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
+#define REGISTER_CUSTOM_OBJECT(module, _create_object, _free_obj, _std) \
+    REGISTER_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
+    module##_handlers.offset = XtOffsetOf(module, _std)
+
+#define SET_CLASS_CUSTOM_OBJECT(module, _create_object, _free_obj,_struct, _std) \
+    REGISTER_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
     module##_handlers.offset = XtOffsetOf(_struct, _std)
+
+
+#ifndef ZEND_CLOSURE_OBJECT
+#define ZEND_CLOSURE_OBJECT(op_array) \
+	((zend_object*)((char*)(op_array) - sizeof(zend_object)))
+#endif 
+
+
+/* Allow install from PECL on PHP < 7.3 */
+#ifndef GC_ADDREF
+#define GC_ADDREF(p) (++GC_REFCOUNT(p))
+#endif
+
 
 #endif	/* PHP_LIB_H */

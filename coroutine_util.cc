@@ -54,14 +54,14 @@ PHP_METHOD(lib_coroutine_util,defer)
 {
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
-    php_lib_fci_fcc *defer_fci_fcc;
+    CallBackParam *defer_fci_fcc;
 
     ZEND_PARSE_PARAMETERS_START(1,-1)
     Z_PARAM_FUNC(fci,fcc)
     Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    defer_fci_fcc = (php_lib_fci_fcc *)emalloc(sizeof(php_lib_fci_fcc));
+    defer_fci_fcc = (CallBackParam *)emalloc(sizeof(CallBackParam));
 
     ZEND_PARSE_PARAMETERS_START(1, -1)
     Z_PARAM_FUNC(fci, fcc)
