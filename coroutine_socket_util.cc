@@ -2,15 +2,10 @@
 #include "socket.h"
 #include "error.h"
 #include "php_lib.h"
+#include "lib_class.h"
 
 using lib::coroutine::Socket;
 
-typedef struct
-{
-    Socket *socket;
-    zend_object std;
-
-}co_socket;
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_co_socket_void, 0, 0, 0)
 ZEND_END_ARG_INFO()
@@ -41,45 +36,23 @@ ZEND_END_ARG_INFO()
 /**
  * Define zend class entry
  */
-zend_class_entry co_socket_ce;
-zend_class_entry *co_socket_ce_ptr;
+/**
+ * Define zend class entry
+ */
+INIT_CLASS_HANDLER(co_socket)
 
-static zend_object_handlers co_socket_handlers;
 
 
-static co_socket* co_socket_fetch_object(zend_object *obj)
+struct co_socket
 {
-    return (co_socket *) ((char *) obj - co_socket_handlers.offset);
-}
+    Socket *socket;
+    zend_object std;
 
-static zend_object* co_socket_create_object(zend_class_entry *ce)
-{
-    co_socket *sock = (co_socket *) ecalloc(1, sizeof(co_socket) + zend_object_properties_size(ce));
-    zend_object_std_init(&sock->std, ce);
-    object_properties_init(&sock->std, ce);
-    sock->std.handlers = &co_socket_handlers;
-    return &sock->std;
-}
-
-static void co_socket_free_object(zend_object *object)
-{
-    co_socket *sock = (co_socket *) co_socket_fetch_object(object);
-    if (sock->socket && sock->socket != LIB_BAD_SOCKET)
-    {
-        sock->socket->close();
-        delete sock->socket;
-    }
-    zend_object_std_dtor(&sock->std);
-}
-
-void php_lib_init_socket_object(zval *zsocket, Socket *socket)
-{
-    zend_object *object = co_socket_create_object(co_socket_ce_ptr);
-
-    co_socket *socket_t = (co_socket *) co_socket_fetch_object(object);
-    socket_t->socket = socket;
-    ZVAL_OBJ(zsocket, object);
-}
+    FETCH_METHOD(co_socket)
+    CREATE_METHOD(co_socket)
+    FREE_METHOD(co_socket,socket)
+    INIT_METHOD(co_socket,Socket,socket)
+};
 
 
 static PHP_METHOD(co_socket, __construct)
@@ -96,7 +69,7 @@ static PHP_METHOD(co_socket, __construct)
             Z_PARAM_LONG(protocol)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     socket_t->socket = new Socket(domain, type, protocol);
 
     zend_update_property_long(co_socket_ce_ptr, getThis(), ZEND_STRL("fd"), socket_t->socket->get_fd());
@@ -114,7 +87,7 @@ static PHP_METHOD(co_socket, bind)
     Z_PARAM_LONG(port)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     socket = socket_t->socket;
 
     if (socket->bind(LIB_SOCK_TCP, Z_STRVAL_P(zhost), port) < 0)
@@ -135,7 +108,7 @@ static PHP_METHOD(co_socket, listen)
     Z_PARAM_LONG(backlog)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     socket = socket_t->socket;
 
     if (socket->listen(backlog) < 0)
@@ -152,15 +125,15 @@ static PHP_METHOD(co_socket, accept)
     Socket *server_socket;
     Socket *conn_socket;
 
-    server_socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    server_socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     server_socket = server_socket_t->socket;
     conn_socket = server_socket->accept();
     if (!conn_socket)
     {
         RETURN_NULL();
     }
-    zend_object *conn = co_socket_create_object(co_socket_ce_ptr);
-    conn_socket_t = (co_socket *)co_socket_fetch_object(conn);
+    zend_object *conn = co_socket::create_object(co_socket_ce_ptr);
+    conn_socket_t = (co_socket *)co_socket::fetch_object(conn);
     conn_socket_t->socket = conn_socket;
     ZVAL_OBJ(return_value, &(conn_socket_t->std));
     zend_update_property_long(co_socket_ce_ptr, return_value, ZEND_STRL("fd"), conn_socket_t->socket->get_fd());
@@ -179,7 +152,7 @@ static PHP_METHOD(co_socket, recv)
 
     Socket::init_read_buffer();
 
-    conn_socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    conn_socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     conn_socket = conn_socket_t->socket;
     ret = conn_socket->recv(Socket::read_buffer, Socket::read_buffer_len);
     if (ret == 0)
@@ -208,7 +181,7 @@ static PHP_METHOD(co_socket, send)
     Z_PARAM_STRING(data, length)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    conn_socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    conn_socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     conn_socket = conn_socket_t->socket;
     ret = conn_socket->send(data, length);
     if (ret < 0)
@@ -223,7 +196,7 @@ static PHP_METHOD(co_socket, close)
     int ret;
     co_socket *conn_socket_t;
 
-    conn_socket_t = (co_socket *)co_socket_fetch_object(Z_OBJ_P(getThis()));
+    conn_socket_t = (co_socket *)co_socket::fetch_object(Z_OBJ_P(getThis()));
     ret = conn_socket_t->socket->close();
     if (ret < 0)
     {
@@ -252,7 +225,7 @@ void lib_co_socket_init(int module_number)
     INIT_NS_CLASS_ENTRY(co_socket_ce, "Lib", "Coroutine\\Socket", co_socket_methods);
     memcpy(&co_socket_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     co_socket_ce_ptr = zend_register_internal_class(&co_socket_ce TSRMLS_CC); // Registered in the Zend Engine
-    REGISTER_CUSTOM_OBJECT(co_socket, co_socket_create_object, co_socket_free_object,std);
+    REGISTER_CUSTOM_OBJECT(co_socket);
 
     zend_declare_property_long(co_socket_ce_ptr, ZEND_STRL("fd"), -1, ZEND_ACC_PUBLIC);
     zend_declare_property_long(co_socket_ce_ptr, ZEND_STRL("errCode"), 0, ZEND_ACC_PUBLIC);

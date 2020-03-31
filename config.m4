@@ -63,6 +63,7 @@ if test "$PHP_LIB" != "no"; then
         coroutine_socket_util.cc \
         runtime_util.cc \
         thread_pool_util.cc \
+        thread_pool_future_util.cc \
 
         src/log/log.cc \
         src/error/error.cc \
@@ -97,7 +98,7 @@ if test "$PHP_LIB" != "no"; then
 
     PHP_REQUIRE_CXX()
 
-    CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations"
+    CXXFLAGS="$CXXFLAGS -O0 -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations"
     CXXFLAGS="$CXXFLAGS -std=c++11"
 
     PHP_ADD_BUILD_DIR($ext_builddir/thirdparty/boost)

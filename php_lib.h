@@ -52,6 +52,7 @@ void lib_channel_init();
 void lib_co_socket_init(int module_number);
 void lib_runtime_init();
 void lib_thread_pool_init(int module_number);
+void lib_thread_pool_future_init(int module_number);
 
 PHP_FUNCTION(lib_coroutine_create);
 
@@ -89,9 +90,9 @@ inline zval* lib_zval_dup(zval *val)
 /**
  * module##_handlers.offset 保存PHP对象在自定义对象中的偏移量
  */
-#define REGISTER_CUSTOM_OBJECT(module, _create_object, _free_obj, _std) \
-    REGISTER_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
-    module##_handlers.offset = XtOffsetOf(module, _std)
+#define REGISTER_CUSTOM_OBJECT(module) \
+    REGISTER_CLASS_CREATE_AND_FREE(module, module::create_object, module::free_object); \
+    module##_handlers.offset = XtOffsetOf(module,std)
 
 #define SET_CLASS_CUSTOM_OBJECT(module, _create_object, _free_obj,_struct, _std) \
     REGISTER_CLASS_CREATE_AND_FREE(module, _create_object, _free_obj); \
