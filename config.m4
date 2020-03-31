@@ -77,6 +77,8 @@ if test "$PHP_LIB" != "no"; then
         src/channel/channel.cc \
         src/memory/ShareMem.cc \
 
+        src/thread/thread_pool.cc \
+
         src/hook/sleep.cc \
         src/hook/socket_stream.cc \
 
