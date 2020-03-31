@@ -33,10 +33,10 @@ private:
 ThreadPool::ThreadPool(size_t threads)
 :stop(false)
 {
+    cout << "start " << threads << " threads" << endl;
     for(size_t i = 0; i < threads ; i ++){
         workers.emplace_back([this]{
             for(;;){
-                cout << "wait ....:" << this_thread::get_id() << endl;
                 function<void()> task;
                 {
                     unique_lock<mutex> lock(this->queue_mu);
