@@ -59,15 +59,13 @@ PHP_METHOD(thread_pool,add)
 
     auto pool = thread_pool::fetch_object(Z_OBJ_P(getThis()));
 
-    zval *fobj;
-    thread_pool_future::init_object(fobj,pool->pool->enqueue([call]{
+    //destory after return but just use fobj.value.obj ,so it won't be a problem
+    zval fobj;
+    thread_pool_future::init_object(&fobj,pool->pool->enqueue([=]{
         call->call();
     }));
-//    thread_pool_future *f = thread_pool_future::fetch_object(Z_OBJ_P(fobj));
-//    f->fu = std::forward<future<void>>(fu);
-//    f->fu = task;
-
-    RETURN_ZVAL(fobj, 1, NULL)
+    //there maybe do some copy 
+    RETURN_ZVAL(&fobj, 1, NULL)
 }
 
 static const zend_function_entry thread_pool_methods[] =
