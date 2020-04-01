@@ -22,5 +22,7 @@ namespace Lib;
 提供定时任务和对于timer操作，基于epoll阻塞实现定时器，采用链表保存时间任务，有待提高性能
 ## @`Lib/Coroutine/Server`
 提供携程化socket服务，监听tcp协议
-## @`Lib/Thread/Pool`
-线程池，创建n个线程等待投递任务执行,返回一个`Lib/Thread/Pool/Future`对象，可阻塞等待返回结果
+## @`Lib/Thread/Pool` 
+创建线程池,等待投递任务执行
+## @`Lib/Thread/Pool/Future`
+阻塞等待线程任务执行完毕，并获取返回值

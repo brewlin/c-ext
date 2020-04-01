@@ -49,14 +49,13 @@ struct CallBackParam
     void AddRefCount(){
         zend_fci_cache_persist(&fcc);
     }
-    void call(){
-            zval result;
-            fci.retval = &result;
-            if (zend_call_function(&fci, &fcc) != SUCCESS)
-            {
-                php_error_docref(NULL, E_WARNING, "defer execute error");
-                return;
-            }
+    void call(zval *result){
+        fci.retval = result;
+        if (zend_call_function(&fci, &fcc) != SUCCESS)
+        {
+            php_error_docref(NULL, E_WARNING, "defer execute error");
+            return;
+        }
     }
     ~CallBackParam(){
         zend_fci_cache_discard(&fcc);

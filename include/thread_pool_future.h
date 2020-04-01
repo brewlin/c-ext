@@ -18,7 +18,7 @@ extern   zend_object_handlers thread_pool_future_handlers;
 
 struct thread_pool_future
 {
-    future<void> fu;
+    future<void *> fu;
     zend_object std;
 
     FETCH_METHOD(thread_pool_future)
@@ -28,7 +28,7 @@ struct thread_pool_future
         auto obj =fetch_object(object);
         zend_object_std_dtor(&obj->std);
     }
-    static void init_object(zval *z, future<void> obj)
+    static void init_object(zval *z, future<void *> obj)
     {
         zend_object *object = create_object(thread_pool_future_ce_ptr);
         thread_pool_future *cobj = fetch_object(object);

@@ -14,14 +14,17 @@ zend_class_entry thread_pool_future_ce;
 zend_class_entry *thread_pool_future_ce_ptr;
 zend_object_handlers thread_pool_future_handlers;
 
-PHP_METHOD(thread_pool, wait)
+PHP_METHOD(thread_pool, get)
 {
     auto obj = thread_pool_future::fetch_object(Z_OBJ_P(getThis()));
-    obj->fu.get();
+    zval *retval = (zval *)obj->fu.get();
+
+    RETURN_ZVAL(retval, 0, NULL);
+    free(retval);
 }
 static const zend_function_entry thread_pool_future_methods[] =
     {
-        PHP_ME(thread_pool, wait, arg_void, ZEND_ACC_PUBLIC)
+        PHP_ME(thread_pool, get, arg_void, ZEND_ACC_PUBLIC)
         PHP_FE_END
     };
 
@@ -30,10 +33,6 @@ void lib_thread_pool_future_init(int module_number)
     INIT_NS_CLASS_ENTRY(thread_pool_future_ce, "Lib", "Thread\\Pool\\Future", thread_pool_future_methods);
     memcpy(&thread_pool_future_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     thread_pool_future_ce_ptr = zend_register_internal_class(&thread_pool_future_ce TSRMLS_CC); // Registered in the Zend Engine
-
     //注册绑定自定义类到php类
     REGISTER_CUSTOM_OBJECT(thread_pool_future);
-    // thread_pool_ce_ptr->create_object = thread_pool::create_object;
-    // thread_pool_handlers.free_obj = thread_pool::free_object;
-    // thread_pool_handlers.offset = __builtin_offsetof (thread_pool, std);
 }
