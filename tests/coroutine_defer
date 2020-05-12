@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+lib_event_init();
+
+cgo(function ()
+{
+    echo "do sth\n";
+    Cco::defer(function(){
+        var_dump("defer");
+    });
+    echo "do sth too\n";
+});
+lib_event_wait();

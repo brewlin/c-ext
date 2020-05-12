@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+$pool = new Lib\Thread\Pool(4);
+
+$ref = [1,2,3,4];
+
+//future = Lib\Thread\Pool\Future
+//future->get() 可以阻塞返回结果
+$future = $pool->add(function()use(&$ref){
+    sleep(1);
+    var_dump($ref);
+});
+$future->get();

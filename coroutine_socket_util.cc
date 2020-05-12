@@ -50,7 +50,15 @@ struct co_socket
 
     FETCH_METHOD(co_socket)
     CREATE_METHOD(co_socket)
-    FREE_METHOD(co_socket,socket)
+    //define free method
+    FREE_METHOD_START(co_socket,socket)
+        if (obj->socket && obj->socket != LIB_BAD_SOCKET)
+        {
+            obj->socket->close();
+            delete obj->socket;
+        }
+    FREE_MEHTOD_END
+    
     INIT_METHOD(co_socket,Socket,socket)
 };
 

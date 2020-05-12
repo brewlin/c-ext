@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+lib_event_init();
+
+cgo(function ()
+{
+    $socket = new Lib\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+    if($socket->fd < 0){
+        var_dump("err");return;
+    }
+    $socket->bind("127.0.0.1", 9999);
+    $socket->listen();
+    while (true) {
+        $conn = $socket->accept();
+        cgo(function () use($conn)
+        {
+            $data = $conn->recv();
+            $responseStr = "HTTP/1.1 200 OK\r\n
+                        Content-Type: text/html\r\n
+                        Connection: close\r\n
+                        Content-Length: 11\r\n\r\n
+                        hello world\r\n";
+            $conn->send($responseStr);
+            $conn->close();
+        });
+    }
+});
+
+lib_event_wait();

@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+lib_event_init();
+
+//定时器 毫秒单位 循环触发
+$timerid = Lib\Timer::tick(1000,function(){
+    echo "定时器循环";
+});
+
+//定时器 毫秒单位 触发单次
+Lib\Timer::after(1000,function()use($timerid){
+    echo "只执行一次";
+    //定时器 毫秒单位 触发单次
+    Lib\Timer::after(2000,function()use($timerid){
+        //定时器删除
+        Lib\Timer::del($timerid);
+    });
+
+});
+
+
+lib_event_wait();

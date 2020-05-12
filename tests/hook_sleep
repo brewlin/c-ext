@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+Lib\Runtime::enableCoroutine();
+lib_event_init();
+cgo(function(){
+    sleep(1000); // == Cco::sleep(1);
+    echo "1";
+});
+lib_event_wait();
