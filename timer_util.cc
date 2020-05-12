@@ -2,80 +2,68 @@
 #include "timer.h"
 #include "zend_callback.h"
 
-
-struct php_lib_timer_callback
-{
-    zend_fcall_info fci;
-    zend_fcall_info_cache fcc;
-    long seconds;
-};
 zend_class_entry lib_timer_ce;
 zend_class_entry *lib_timer_ce_ptr;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_timer_arg, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(timer_arg, 0, 0, 2)
 ZEND_ARG_INFO(0, seconds)
 ZEND_ARG_CALLABLE_INFO(0, func, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_lib_timer_del, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(timer_del, 0, 0, 1)
 ZEND_ARG_INFO(0, timerid)
 ZEND_END_ARG_INFO()
 
+/**
+ * del callback param
+ **/
 static void del(void *data)
 {
-    php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
-    zend_fci_cache_discard(&fci->fcc);
-    zend_fci_params_discard(&fci->fci);
-    free(fci);
+    CallBackParam *call = (CallBackParam *)data;
+    delete call;
 }
 
-
+/**
+ * tick
+ **/
 int tick(long long id,void *data){
 
-    php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
+    CallBackParam *call = (CallBackParam *)data;
     zval result;
-    fci->fci.retval = &result;
-    if(zend_call_function(&fci->fci,&fci->fcc) != SUCCESS){
-        return NOMORE;
-    }
-    return fci->seconds;
+    call->call(&result);
+    return call->seconds;
 }
 PHP_METHOD(timer_obj,tick)
 {
-    php_lib_timer_callback *fci = (php_lib_timer_callback *)malloc(sizeof(php_lib_timer_callback));
+    CallBackParam *call = new CallBackParam;
     //强制传入两个参数
     ZEND_PARSE_PARAMETERS_START(2, 2)
-    Z_PARAM_LONG(fci->seconds)
-    Z_PARAM_FUNC(fci->fci,fci->fcc)
+    Z_PARAM_LONG(call->seconds)
+    Z_PARAM_FUNC(call->fci,call->fcc)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    long id = create_time_event(fci->seconds,tick,fci,del);
-    zend_fci_cache_persist(&fci->fcc);
+    //add reference count
+    call->AddRefCount();
+    long id = create_time_event(call->seconds,tick,call,del);
     RETURN_LONG(id);
 }
 int after(long long id,void *data){
 
-    php_lib_timer_callback *fci = (php_lib_timer_callback *)data;
+    CallBackParam *call = (CallBackParam *)data;
     zval result;
-    fci->fci.retval = &result;
-    if(zend_call_function(&fci->fci,&fci->fcc) != SUCCESS){
-        return NOMORE;
-    }
+    call->call(&result);
     return NOMORE;
 }
-
-
 PHP_METHOD(timer_obj,after)
 {
-    php_lib_timer_callback *fci = (php_lib_timer_callback *)malloc(sizeof(php_lib_timer_callback));
+    CallBackParam *call = new CallBackParam;
     //强制传入两个参数
     ZEND_PARSE_PARAMETERS_START(2, 2)
-    Z_PARAM_LONG(fci->seconds)
-    Z_PARAM_FUNC(fci->fci,fci->fcc)
+    Z_PARAM_LONG(call->seconds)
+    Z_PARAM_FUNC(call->fci,call->fcc)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    long id = create_time_event(fci->seconds,after,fci,del);
-    zend_fci_cache_persist(&fci->fcc);
+    //add reference count
+    call->AddRefCount();
+    long id = create_time_event(call->seconds,after,call,del);
     RETURN_LONG(id)
 }
 PHP_METHOD(timer_obj,del)
@@ -93,12 +81,12 @@ PHP_METHOD(timer_obj,del)
 
 }
 const zend_function_entry lib_timer_util_methods[] =
-        {
-                PHP_ME(timer_obj,tick,arginfo_lib_timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-                PHP_ME(timer_obj,after,arginfo_lib_timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-                PHP_ME(timer_obj,del,arginfo_lib_timer_del,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-                PHP_FE_END
-        };
+{
+    PHP_ME(timer_obj,tick,timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(timer_obj,after,timer_arg,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(timer_obj,del,timer_del,ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_FE_END
+};
 
 
 void lib_timer_util_init(){

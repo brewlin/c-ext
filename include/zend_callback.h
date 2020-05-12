@@ -46,10 +46,15 @@ struct CallBackParam
 {
     zend_fcall_info fci;
     zend_fcall_info_cache fcc;
-    void AddRefCount(){
+    // time event
+    long seconds;
+
+    void AddRefCount()
+    {
         zend_fci_cache_persist(&fcc);
     }
-    void call(zval *result){
+    void call(zval *result)
+    {
         fci.retval = result;
         if (zend_call_function(&fci, &fcc) != SUCCESS)
         {
@@ -57,7 +62,8 @@ struct CallBackParam
             return;
         }
     }
-    ~CallBackParam(){
+    ~CallBackParam()
+    {
         zend_fci_cache_discard(&fcc);
         zend_fci_params_discard(&fci);
     }
