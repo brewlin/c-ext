@@ -50,11 +50,15 @@ Coroutine* Coroutine::get_current()
 }
 void Coroutine::yield()
 {
+    //save php stack
+    on_yield(task);
     current = origin;
     ctx.swap_out();
 }
 void Coroutine::resume()
 {
+    //resume php stack
+    on_resume(task);
     origin = current;
     current = this;
     ctx.swap_in();
