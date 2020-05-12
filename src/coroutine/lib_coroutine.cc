@@ -90,26 +90,19 @@ void PHPCoroutine::create_func(void *arg)
     std::stack<CallBackParam *> *defer_tasks = task->defer_tasks;
 
     if (defer_tasks) {
-        CallBackParam *defer_fci_fcc;
+        CallBackParam *defer_call;
         zval result;
         while(!defer_tasks->empty())
         {
-            defer_fci_fcc = defer_tasks->top();
+            defer_call = defer_tasks->top();
             defer_tasks->pop();
-            defer_fci_fcc->fci.retval = &result;
-
-            if (zend_call_function(&defer_fci_fcc->fci, &defer_fci_fcc->fcc) != SUCCESS)
-            {
-                php_error_docref(NULL, E_WARNING, "defer execute error");
-                return;
-            }
-            efree(defer_fci_fcc);
+            defer_call->fci.retval = &result;
+            defer_call->call(&result);
+            delete defer_call;
         }
         delete defer_tasks;
         task->defer_tasks = nullptr;
     }
-//    zend_vm_stack stack = EG(vm_stack);
-//    efree(stack);
     zval_ptr_dtor(retval);
 
 }
@@ -133,14 +126,14 @@ void PHPCoroutine::vm_stack_init(void)
      EG(vm_stack_page_size) = size;
 }
 
-void PHPCoroutine::defer(CallBackParam *defer_fci_fcc)
+void PHPCoroutine::defer(CallBackParam *defer_call)
 {
     php_coro_task *task = (php_coro_task *)get_task();
     if(task->defer_tasks == nullptr)
     {
         task->defer_tasks = new std::stack<CallBackParam *>;
     }
-    task->defer_tasks->push(defer_fci_fcc);
+    task->defer_tasks->push(defer_call);
 }
 int PHPCoroutine::sleep(double seconds)
 {

@@ -32,45 +32,26 @@ ZEND_END_ARG_INFO()
 //{
 PHP_FUNCTION(lib_coroutine_create)
 {
-
-    //????
     zend_fcall_info fci = empty_fcall_info;
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
     zval result;
-    //1 -1 ????????? ??????
+    //1 -1 可变参数
     ZEND_PARSE_PARAMETERS_START(1,-1)
         Z_PARAM_FUNC(fci,fcc)
         Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
     long cid = PHPCoroutine::create(&fcc,fci.param_count,fci.params);
     RETURN_LONG(cid);
-//     fci.retval = &result;
-//     if(zend_call_function(&fci,&fcc) != SUCCESS){
-//         return;
-//     }
-//     *return_value = result;
 }
 PHP_METHOD(lib_coroutine_util,defer)
 {
-    zend_fcall_info fci = empty_fcall_info;
-    zend_fcall_info_cache fcc = empty_fcall_info_cache;
-    CallBackParam *defer_fci_fcc;
-
+    CallBackParam *defer_call = new CallBackParam;
     ZEND_PARSE_PARAMETERS_START(1,-1)
-    Z_PARAM_FUNC(fci,fcc)
-    Z_PARAM_VARIADIC("*",fci.params,fci.param_count)
+    Z_PARAM_FUNC(defer_call->fci,defer_call->fcc)
+    Z_PARAM_VARIADIC("*",defer_call->fci.params,defer_call->fci.param_count)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    defer_fci_fcc = (CallBackParam *)emalloc(sizeof(CallBackParam));
-
-    ZEND_PARSE_PARAMETERS_START(1, -1)
-    Z_PARAM_FUNC(fci, fcc)
-    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    defer_fci_fcc->fci = fci;
-    defer_fci_fcc->fcc = fcc;
-
-    PHPCoroutine::defer(defer_fci_fcc);
+    PHPCoroutine::defer(defer_call);
 }
 PHP_METHOD(lib_coroutine_util,yield)
 {

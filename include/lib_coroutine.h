@@ -41,7 +41,7 @@ namespace lib
     class PHPCoroutine
     {
     public:
-        static void defer(CallBackParam *defer_fci_fcc);
+        static void defer(CallBackParam *defer_call);
         static long create(zend_fcall_info_cache *fci_cache,uint32_t argc,zval *argv);
         static int sleep(double seconds);
         static int scheduler();
